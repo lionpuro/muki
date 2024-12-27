@@ -11,9 +11,12 @@
 		"preview": "vite preview"
 	},
 	"dependencies": {
+		"@fontsource-variable/inter": "^5.1.0",
+		"clsx": "^2.1.1",
 		"konva": "^9.3.16",
 		"react": "^19.0.0",
 		"react-dom": "^19.0.0",
+		"react-icons": "^5.4.0",
 		"react-konva": "^19.0.1"
 	},
 	"devDependencies": {
