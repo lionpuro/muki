@@ -26,22 +26,6 @@ const Editor = () => {
 	const [selectedImage, selectImage] = useState<string | null>(null);
 	const { size, scale } = useCanvasSize();
 
-	const centerSelected = () => {
-		const imgs = images.slice();
-		const index = imgs.findIndex((img) => img.id === selectedImage);
-		if (index === -1) return;
-		const img = imgs[index];
-
-		if (!img.height || !img.width) {
-			console.error(img.height, img.width);
-			return;
-		}
-		const posX = (resolution.width - img.width) / 2;
-		const posY = (resolution.height - img.height) / 2;
-		imgs[index] = { ...img, x: posX, y: posY };
-		setImages(imgs);
-	};
-
 	const removeSelected = () => {
 		const imgs = [...images].filter((img) => img.id != selectedImage);
 		setImages(imgs);
@@ -98,10 +82,9 @@ const Editor = () => {
 				</div>
 				{!!selectedImage && (
 					<div className="flex gap-2">
-						<Button onClick={centerSelected}>Center</Button>
 						<Button onClick={removeSelected}>
 							<TrashIcon className="size-5" />
-							Remove
+							Delete
 						</Button>
 					</div>
 				)}

@@ -28,7 +28,7 @@ export const ImageComponent = ({
 		<>
 			<KonvaImage
 				draggable
-				name="shape"
+				name="object"
 				image={image}
 				width={attrs.width}
 				height={attrs.height}

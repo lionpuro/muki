@@ -1,8 +1,9 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Dispatch, SetStateAction, useRef } from "react";
-import { Stage, Layer, Transformer } from "react-konva";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Stage, Layer, Line } from "react-konva";
 import ImageComponent, { ImageAttributes } from "~/components/Image";
+import Transformer, { SnapLines } from "~/components/Editor/Transformer";
 
 export type Resolution = {
 	width: number;
@@ -29,36 +30,16 @@ const Canvas = ({
 	const stageRef = useRef<Konva.Stage>(null);
 	const trRef = useRef<Konva.Transformer>(null);
 
+	const [snapLines, setSnapLines] = useState<SnapLines>({
+		horizontal: [],
+		vertical: [],
+	});
+
 	const deselect = (e: ClickEvent) => {
 		if (e.target === stageRef.current) {
 			trRef.current?.nodes([]);
 			selectImage(null);
 		}
-	};
-
-	const onDragMove = () => {
-		const target = trRef.current;
-		if (!target) return;
-		const [selectedNode] = target.getNodes();
-
-		if (!selectedNode) return;
-
-		const orgAbsPos = target.absolutePosition();
-		const absPos = target.absolutePosition();
-
-		const vecDiff = {
-			x: orgAbsPos.x - absPos.x,
-			y: orgAbsPos.y - absPos.y,
-		};
-
-		const nodeAbsPos = selectedNode.getAbsolutePosition();
-
-		const newPos = {
-			x: nodeAbsPos.x - vecDiff.x,
-			y: nodeAbsPos.y - vecDiff.y,
-		};
-
-		selectedNode.setAbsolutePosition(newPos);
 	};
 
 	return (
@@ -95,12 +76,16 @@ const Canvas = ({
 						/>
 					))}
 					<Transformer
-						ref={trRef}
-						onDragMove={onDragMove}
-						rotateEnabled={false}
-						borderStroke={"#3b82f6"}
-						borderStrokeWidth={2}
+						stageRef={stageRef}
+						trRef={trRef}
+						setLines={setSnapLines}
 					/>
+					{snapLines.horizontal.map((line, i) => (
+						<Line key={i} {...line} strokeScaleEnabled={false} />
+					))}
+					{snapLines.vertical.map((line, i) => (
+						<Line key={i} {...line} strokeScaleEnabled={false} />
+					))}
 				</Layer>
 			</Stage>
 		</div>
