@@ -1,73 +1,48 @@
-import { useEffect, useRef } from "react";
-import { Image as KonvaImage, Transformer } from "react-konva";
+import { KonvaEventObject } from "konva/lib/Node";
+import { Image as KonvaImage } from "react-konva";
+import useImage from "use-image";
 
-export type ImageProps = {
+export type ImageAttributes = {
 	id: string;
-	image: HTMLImageElement;
-	x: number;
-	y: number;
+	src: string;
 	width: number;
 	height: number;
-	rotation?: number;
+	x: number;
+	y: number;
 };
 
-const ImageComponent = ({
-	imageProps,
-	isSelected,
+export const ImageComponent = ({
+	src,
+	attrs,
 	onSelect,
 	onChange,
 }: {
-	imageProps: ImageProps;
-	isSelected: boolean;
-	onSelect: () => void;
-	onChange: (attrs: ImageProps) => void;
+	src: string;
+	attrs: ImageAttributes;
+	onSelect: (e: KonvaEventObject<MouseEvent | TouchEvent>) => void;
+	onChange: (a: ImageAttributes) => void;
 }) => {
-	const imageRef: React.ComponentProps<typeof KonvaImage>["ref"] = useRef(null);
-	const transformRef: React.ComponentProps<typeof Transformer>["ref"] =
-		useRef(null);
-
-	useEffect(() => {
-		if (isSelected) {
-			if (!transformRef.current || !imageRef.current) {
-				return;
-			}
-			transformRef.current.nodes([imageRef.current]);
-			transformRef.current.getLayer()?.batchDraw();
-		}
-	}, [isSelected]);
+	const [image] = useImage(src);
 
 	return (
 		<>
 			<KonvaImage
-				ref={imageRef}
-				onClick={onSelect}
-				onTap={onSelect}
-				{...imageProps}
 				draggable
-				onDragStart={onSelect}
+				name="shape"
+				image={image}
+				width={attrs.width}
+				height={attrs.height}
+				x={attrs.x}
+				y={attrs.y}
 				onDragEnd={(e) => {
 					onChange({
-						...imageProps,
+						...attrs,
 						x: e.target.x(),
 						y: e.target.y(),
 					});
 				}}
-				onTransformEnd={() => {
-					if (!imageRef.current) return;
-					const node = imageRef.current;
-					const scaleX = node.scaleX();
-					const scaleY = node.scaleY();
-
-					node.scaleX(1);
-					node.scaleY(1);
-					onChange({
-						...imageProps,
-						x: node.x(),
-						y: node.y(),
-						width: Math.max(5, node.width() * scaleX),
-						height: Math.max(node.height() * scaleY),
-					});
-				}}
+				onMouseDown={onSelect}
+				onTap={onSelect}
 				onMouseEnter={(e) => {
 					const container = e.target.getStage()?.container();
 					if (container) {
@@ -81,14 +56,6 @@ const ImageComponent = ({
 					}
 				}}
 			/>
-			{isSelected && (
-				<Transformer
-					ref={transformRef}
-					rotateEnabled={false}
-					borderStroke={"#3b82f6"}
-					borderStrokeWidth={2}
-				/>
-			)}
 		</>
 	);
 };

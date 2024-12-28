@@ -23,7 +23,6 @@ const FilePicker = ({
 			image.onload = () => {
 				image.width = image.naturalWidth;
 				image.height = image.naturalHeight;
-				console.log("load image", image);
 				setImage(image);
 			};
 		};

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Canvas from "~/components/Editor/Canvas";
-import { ImageProps } from "~/components/Image";
+import { ImageAttributes } from "~/components/Image";
 import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
 import useCanvasSize from "~/hooks/useCanvasSize";
@@ -22,7 +22,7 @@ const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 };
 
 const Editor = () => {
-	const [images, setImages] = useState<ImageProps[]>([]);
+	const [images, setImages] = useState<ImageAttributes[]>([]);
 	const [selectedImage, selectImage] = useState<string | null>(null);
 	const { size, scale } = useCanvasSize();
 
@@ -49,15 +49,14 @@ const Editor = () => {
 	};
 
 	const addImage = (img: HTMLImageElement) => {
-		const newImage: ImageProps = {
+		const newImage: ImageAttributes = {
 			id: nanoid(),
-			image: img,
+			src: img.src,
 			width: img.width,
 			height: img.height,
 			x: (resolution.width - img.width) / 2,
 			y: (resolution.height - img.height) / 2,
 		};
-		console.log(newImage.id);
 		setImages([...images, newImage]);
 		selectImage(newImage.id);
 	};
@@ -90,8 +89,8 @@ const Editor = () => {
 								)}
 							>
 								<img
+									src={img.src}
 									className="max-w-full h-auto max-h-28 flex-1"
-									src={img.image.src}
 								/>
 							</div>
 						</div>
