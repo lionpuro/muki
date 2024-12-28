@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Dispatch, SetStateAction, useRef, useState } from "react";
+import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
 import { Stage, Layer, Line } from "react-konva";
 import ImageComponent, { ImageAttributes } from "~/components/Image";
 import Transformer, { SnapLines } from "~/components/Editor/Transformer";
@@ -13,6 +13,8 @@ export type Resolution = {
 type ClickEvent = KonvaEventObject<MouseEvent | TouchEvent>;
 
 const Canvas = ({
+	stageRef,
+	trRef,
 	size,
 	scale,
 	images,
@@ -20,6 +22,8 @@ const Canvas = ({
 	selectedImage,
 	selectImage,
 }: {
+	stageRef: RefObject<Konva.Stage>;
+	trRef: RefObject<Konva.Transformer>;
 	size: Resolution;
 	scale: number;
 	images: ImageAttributes[];
@@ -27,9 +31,6 @@ const Canvas = ({
 	selectedImage: string | null;
 	selectImage: Dispatch<SetStateAction<string | null>>;
 }) => {
-	const stageRef = useRef<Konva.Stage>(null);
-	const trRef = useRef<Konva.Transformer>(null);
-
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
 		vertical: [],
