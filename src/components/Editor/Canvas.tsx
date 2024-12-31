@@ -1,6 +1,11 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Dispatch, RefObject, SetStateAction, useRef, useState } from "react";
+import {
+	Dispatch,
+	RefObject,
+	SetStateAction,
+	useState,
+} from "react";
 import { Stage, Layer, Line } from "react-konva";
 import ImageComponent, { ImageAttributes } from "~/components/Image";
 import Transformer, { SnapLines } from "~/components/Editor/Transformer";
@@ -14,6 +19,7 @@ type ClickEvent = KonvaEventObject<MouseEvent | TouchEvent>;
 
 const Canvas = ({
 	stageRef,
+	layerRef,
 	trRef,
 	size,
 	scale,
@@ -21,8 +27,10 @@ const Canvas = ({
 	setImages,
 	selectedImage,
 	selectImage,
+	handleUpdate,
 }: {
 	stageRef: RefObject<Konva.Stage>;
+	layerRef: RefObject<Konva.Layer>;
 	trRef: RefObject<Konva.Transformer>;
 	size: Resolution;
 	scale: number;
@@ -30,6 +38,7 @@ const Canvas = ({
 	setImages: (imgs: ImageAttributes[]) => void;
 	selectedImage: string | null;
 	selectImage: Dispatch<SetStateAction<string | null>>;
+	handleUpdate: () => void;
 }) => {
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
@@ -42,7 +51,6 @@ const Canvas = ({
 			selectImage(null);
 		}
 	};
-
 	return (
 		<div className="bg-zinc-800 rounded">
 			<Stage
@@ -54,7 +62,7 @@ const Canvas = ({
 				onMouseDown={deselect}
 				onTouchStart={deselect}
 			>
-				<Layer>
+				<Layer ref={layerRef}>
 					{images.map((img) => (
 						<ImageComponent
 							key={img.id}
@@ -64,7 +72,7 @@ const Canvas = ({
 								trRef.current?.nodes([e.currentTarget]);
 								selectImage(img.id);
 							}}
-							onChange={(attrs) =>
+							onChange={(attrs) => {
 								setImages(
 									images.map((i) => {
 										if (i.id === selectedImage) {
@@ -72,14 +80,18 @@ const Canvas = ({
 										}
 										return i;
 									}),
-								)
-							}
+								);
+								handleUpdate();
+							}}
 						/>
 					))}
+				</Layer>
+				<Layer>
 					<Transformer
 						stageRef={stageRef}
 						trRef={trRef}
 						setLines={setSnapLines}
+						handleUpdate={handleUpdate}
 					/>
 					{snapLines.horizontal.map((line, i) => (
 						<Line key={i} {...line} strokeScaleEnabled={false} />

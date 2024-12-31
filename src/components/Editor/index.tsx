@@ -12,6 +12,8 @@ import {
 } from "react-icons/tb";
 import { Stage } from "konva/lib/Stage";
 import { Transformer } from "konva/lib/shapes/Transformer";
+import useTextures from "~/hooks/useTextures";
+import { Layer } from "konva/lib/Layer";
 
 const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 	return (
@@ -35,28 +37,51 @@ const downloadURI = (uri: string, filename: string) => {
 	document.body.removeChild(link);
 };
 
+const fitImage = (img: HTMLImageElement) => {
+	const ratio = Math.min(
+		resolution.width / img.width,
+		resolution.height / img.height,
+	);
+	if (img.height > resolution.height || img.width > resolution.width) {
+		return { width: img.width * ratio, height: img.height * ratio };
+	}
+	return { width: img.width, height: img.height };
+};
+
 const Editor = () => {
 	const [images, setImages] = useState<ImageAttributes[]>([]);
 	const [selectedImage, selectImage] = useState<string | null>(null);
 	const { size, scale } = useCanvasSize();
 	const stageRef = useRef<Stage>(null);
+	const layerRef = useRef<Layer>(null);
 	const trRef = useRef<Transformer>(null);
+
+	const { updateTexture } = useTextures();
+	const handleUpdate = () => {
+		const layer = layerRef.current;
+		if (!layer) return;
+		updateTexture(layerRef.current.toCanvas());
+	};
 
 	const removeSelected = () => {
 		const imgs = [...images].filter((img) => img.id != selectedImage);
 		setImages(imgs);
 		trRef.current?.nodes([]);
 		selectImage(null);
+		if (layerRef.current) {
+			updateTexture(layerRef.current.toCanvas());
+		}
 	};
 
 	const addImage = (img: HTMLImageElement) => {
+		const { width, height } = fitImage(img);
 		const newImage: ImageAttributes = {
 			id: nanoid(),
 			src: img.src,
-			width: img.width,
-			height: img.height,
-			x: (resolution.width - img.width) / 2,
-			y: (resolution.height - img.height) / 2,
+			width: width,
+			height: height,
+			x: (resolution.width - width) / 2,
+			y: (resolution.height - height) / 2,
 		};
 		setImages([...images, newImage]);
 		selectImage(newImage.id);
@@ -64,15 +89,16 @@ const Editor = () => {
 
 	const handleExport = () => {
 		trRef.current?.hide();
+		const layer = layerRef.current;
 		const stage = stageRef.current;
-		if (!stage) return;
+		if (!layer || !stage) return;
 
 		stage.width(resolution.width);
 		stage.height(resolution.height);
 		stage.scaleX(1);
 		stage.scaleY(1);
 
-		const uri = stage.toDataURL();
+		const uri = layer.toDataURL();
 		downloadURI(uri, "muki.png");
 
 		stage.width(size.width);
@@ -84,8 +110,19 @@ const Editor = () => {
 
 	return (
 		<>
+			<div className="flex gap-4">
+				<FilePicker addImage={addImage} />
+				<button
+					onClick={handleExport}
+					disabled={images.length < 1}
+					className="flex items-center gap-2 px-4 py-2 rounded bg-primary-700 disabled:bg-zinc-800 font-medium text-sm"
+				>
+					<DownloadIcon className="size-5" /> Download
+				</button>
+			</div>
 			<Canvas
 				stageRef={stageRef}
+				layerRef={layerRef}
 				trRef={trRef}
 				size={size}
 				scale={scale}
@@ -93,18 +130,9 @@ const Editor = () => {
 				setImages={setImages}
 				selectedImage={selectedImage}
 				selectImage={selectImage}
+				handleUpdate={handleUpdate}
 			/>
 			<div className="flex flex-col bg-zinc-900 gap-4">
-				<div className="flex gap-4">
-					<FilePicker addImage={addImage} />
-					<button
-						onClick={handleExport}
-						disabled={images.length < 1}
-						className="flex items-center gap-2 px-4 py-2 rounded bg-primary-700 disabled:bg-zinc-800 font-medium"
-					>
-						<DownloadIcon className="size-5" /> Download
-					</button>
-				</div>
 				<div className="flex gap-2">
 					{images.map((img) => (
 						<div key={`preview-${img.id}`}>

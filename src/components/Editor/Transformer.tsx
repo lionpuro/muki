@@ -35,10 +35,12 @@ const Transformer = ({
 	stageRef,
 	trRef,
 	setLines,
+	handleUpdate,
 }: {
 	stageRef: React.RefObject<Konva.Stage>;
 	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
+	handleUpdate: () => void;
 }) => {
 	const getLineGuideStops = (excludedShape: Konva.Node) => {
 		const stage = stageRef.current;
@@ -239,6 +241,7 @@ const Transformer = ({
 			ref={trRef}
 			onDragMove={onDragMove}
 			onDragEnd={() => setLines({ horizontal: [], vertical: [] })}
+			onTransformEnd={handleUpdate}
 			rotateEnabled={true}
 			borderStroke={"#3b82f6"}
 			borderStrokeWidth={2}
