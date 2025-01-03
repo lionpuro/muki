@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { LineConfig } from "konva/lib/shapes/Line";
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useEffect } from "react";
 import { Transformer as KonvaTransformer } from "react-konva";
 import { snap_threshold, snap_line_style } from "~/constants";
 
@@ -36,11 +36,15 @@ const Transformer = ({
 	trRef,
 	setLines,
 	handleUpdate,
+	selectedShape,
+	anchorSize,
 }: {
 	stageRef: React.RefObject<Konva.Stage>;
 	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
 	handleUpdate: () => void;
+	selectedShape: string | null;
+	anchorSize: number;
 }) => {
 	const getLineGuideStops = (excludedShape: Konva.Node) => {
 		const stage = stageRef.current;
@@ -236,15 +240,38 @@ const Transformer = ({
 		selectedNode.setAbsolutePosition(newPos);
 	};
 
+	// attach to selected
+	useEffect(() => {
+		const tr = trRef.current;
+		const stage = stageRef.current;
+		if (!stage || !tr) return;
+		if (!selectedShape) {
+			tr.nodes([]);
+			return;
+		}
+
+		const selected = stage.findOne("#" + selectedShape);
+		if (selected && tr.getNodes()[0] !== selected) {
+			tr.nodes([selected]);
+		}
+	}, [selectedShape, stageRef, trRef]);
+
 	return (
 		<KonvaTransformer
 			ref={trRef}
 			onDragMove={onDragMove}
 			onDragEnd={() => setLines({ horizontal: [], vertical: [] })}
 			onTransformEnd={handleUpdate}
-			rotateEnabled={true}
-			borderStroke={"#3b82f6"}
+			rotateEnabled={false}
+			borderStroke="#fafafabf"
 			borderStrokeWidth={2}
+			enabledAnchors={["top-left", "top-right", "bottom-left", "bottom-right"]}
+			anchorStroke="#fafafa"
+			anchorStrokeWidth={2}
+			anchorFill="#6a6ac8"
+			anchorSize={anchorSize}
+			anchorCornerRadius={15}
+			flipEnabled={true}
 		/>
 	);
 };

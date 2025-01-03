@@ -7,7 +7,7 @@ const App = () => {
 		<TextureProvider>
 			<div className="h-full flex flex-col">
 				<Preview />
-				<div className="flex flex-col p-4 gap-4">
+				<div className="flex flex-col">
 					<Editor />
 				</div>
 			</div>

@@ -1,29 +1,33 @@
-import { KonvaEventObject } from "konva/lib/Node";
-import { Image as KonvaImage } from "react-konva";
-import useImage from "use-image";
-import { ImageData } from "~/hooks/useShapes";
+import Konva from "konva";
+import { useRef } from "react";
+import { Text as KonvaText } from "react-konva";
+import { TextData } from "~/hooks/useShapes";
 
-export const ImageComponent = ({
+export const TextComponent = ({
 	props,
 	onSelect,
 	onChange,
 }: {
-	props: ImageData;
-	onSelect: (e: KonvaEventObject<MouseEvent | TouchEvent>) => void;
-	onChange: (a: ImageData) => void;
+	props: TextData;
+	onSelect: () => void;
+	onChange: (p: TextData) => void;
 }) => {
-	const [image] = useImage(props.src);
+	const textRef = useRef<Konva.Text>(null);
 
 	return (
-		<KonvaImage
+		<KonvaText
 			id={props.id}
+			ref={textRef}
 			draggable
 			name="object"
-			image={image}
-			width={props.width}
-			height={props.height}
+			text={props.text}
+			fill={props.fill}
+			fontSize={props.fontSize}
 			x={props.x}
 			y={props.y}
+			scaleX={props.scaleX}
+			scaleY={props.scaleY}
+			padding={6}
 			onDragEnd={(e) => {
 				onChange({
 					...props,
@@ -48,5 +52,3 @@ export const ImageComponent = ({
 		/>
 	);
 };
-
-export default ImageComponent;

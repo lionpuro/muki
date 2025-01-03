@@ -5,18 +5,18 @@ import { Mug } from "./Mug";
 
 const Preview = () => {
 	return (
-		<div className="flex min-h-[500px]">
+		<div className="flex min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-800">
 			<Canvas
 				orthographic
 				camera={{
 					isPerspectiveCamera: true,
 					fov: 30,
 					position: [0, 0, 10],
-					zoom: 150,
+					zoom: 120,
 				}}
 			>
 				<group
-					position={[0, -1.7, 0]}
+					position={[0, -1.35, 0]}
 					rotation={new Three.Euler(0, Math.PI / 2, 0, "XYZ")}
 				>
 					<Mug />
@@ -41,6 +41,7 @@ const Preview = () => {
 					autoRotate={false}
 					target={new Three.Vector3(0, 0, 0)}
 					position={new Three.Vector3(0, 0, 0)}
+					panSpeed={1.1}
 				/>
 			</Canvas>
 		</div>

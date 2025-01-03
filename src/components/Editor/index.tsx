@@ -1,25 +1,28 @@
-import { useRef, useState } from "react";
+import {
+	useRef,
+	useState,
+} from "react";
 import Canvas from "~/components/Editor/Canvas";
-import { ImageAttributes } from "~/components/Image";
 import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
 import useCanvasSize from "~/hooks/useCanvasSize";
 import { resolution } from "~/constants";
-import clsx from "clsx";
 import {
-	TbTrash as TrashIcon,
 	TbDownload as DownloadIcon,
+	TbTextPlus as TextIcon,
 } from "react-icons/tb";
 import { Stage } from "konva/lib/Stage";
 import { Transformer } from "konva/lib/shapes/Transformer";
 import useTextures from "~/hooks/useTextures";
 import { Layer } from "konva/lib/Layer";
+import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
+import Controls from "./Controls";
 
 const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
 	return (
 		<button
 			className={
-				"flex items-center gap-2 px-4 py-2 text-sm font-medium rounded bg-zinc-700 hover:bg-zinc-600"
+				"flex items-center gap-2 px-4 py-2 text-sm font-medium rounded bg-zinc-800 hover:bg-zinc-700"
 			}
 			{...props}
 		>
@@ -49,33 +52,61 @@ const fitImage = (img: HTMLImageElement) => {
 };
 
 const Editor = () => {
-	const [images, setImages] = useState<ImageAttributes[]>([]);
-	const [selectedImage, selectImage] = useState<string | null>(null);
+	const [selectedShape, selectShape] = useState<string | null>(null);
+	const { shapes, addShape, updateShape, removeShape, findShape } = useShapes();
+	const containerRef = useRef<HTMLDivElement>(null);
 	const { size, scale } = useCanvasSize();
 	const stageRef = useRef<Stage>(null);
 	const layerRef = useRef<Layer>(null);
 	const trRef = useRef<Transformer>(null);
 
 	const { updateTexture } = useTextures();
-	const handleUpdate = () => {
-		const layer = layerRef.current;
-		if (!layer) return;
-		updateTexture(layerRef.current.toCanvas());
+
+	const upscaled = () => {
+		const stage = stageRef.current;
+		if (!stage || !layerRef.current) return;
+
+		stage.clone();
+		stage.width(resolution.width);
+		stage.height(resolution.height);
+		stage.scaleX(1);
+		stage.scaleY(1);
+
+		const canvas = layerRef.current.toCanvas();
+
+		stage.width(size.width);
+		stage.height(size.height);
+		stage.scaleX(scale);
+		stage.scaleY(scale);
+
+		return canvas;
+	};
+	const handleUpdate = (delay: boolean) => {
+		if (delay) {
+			setTimeout(() => {
+				const cnv = upscaled();
+				if (!cnv) return;
+				updateTexture(cnv);
+			}, 100);
+			return;
+		}
+		const cnv = upscaled();
+		if (!cnv) return;
+		updateTexture(cnv);
 	};
 
 	const removeSelected = () => {
-		const imgs = [...images].filter((img) => img.id != selectedImage);
-		setImages(imgs);
-		trRef.current?.nodes([]);
-		selectImage(null);
-		if (layerRef.current) {
-			updateTexture(layerRef.current.toCanvas());
-		}
+		if (!selectedShape) return;
+		console.log(selectedShape);
+		removeShape(selectedShape);
+		selectShape(null);
+		handleUpdate(true);
 	};
 
 	const addImage = (img: HTMLImageElement) => {
 		const { width, height } = fitImage(img);
-		const newImage: ImageAttributes = {
+		const newImage: ImageData = {
+			type: "image",
 			id: nanoid(),
 			src: img.src,
 			width: width,
@@ -83,8 +114,30 @@ const Editor = () => {
 			x: (resolution.width - width) / 2,
 			y: (resolution.height - height) / 2,
 		};
-		setImages([...images, newImage]);
-		selectImage(newImage.id);
+		addShape(newImage);
+		selectShape(newImage.id);
+		handleUpdate(true);
+		console.log(shapes);
+	};
+
+	const addText = () => {
+		const text: TextData = {
+			type: "text",
+			id: nanoid(),
+			width: 800,
+			height: 400,
+			scaleX: 1,
+			scaleY: 1,
+			x: (resolution.width - 200) / 2,
+			y: (resolution.height - 100) / 2,
+			fill: "#000000",
+			text: "Teksti",
+			fontSize: 280,
+		};
+		addShape(text);
+		selectShape(text.id);
+		handleUpdate(true);
+		console.log(shapes);
 	};
 
 	const handleExport = () => {
@@ -110,60 +163,53 @@ const Editor = () => {
 
 	return (
 		<>
-			<div className="flex gap-4">
+			<div className="flex p-2 sm:p-4 gap-2 sm:gap-4">
 				<FilePicker addImage={addImage} />
-				<button
-					onClick={handleExport}
-					disabled={images.length < 1}
-					className="flex items-center gap-2 px-4 py-2 rounded bg-primary-700 disabled:bg-zinc-800 font-medium text-sm"
-				>
-					<DownloadIcon className="size-5" /> Download
-				</button>
+				<Button onClick={addText}>
+					<TextIcon className="size-5" /> Lisää teksti
+				</Button>
 			</div>
-			<Canvas
-				stageRef={stageRef}
-				layerRef={layerRef}
-				trRef={trRef}
-				size={size}
-				scale={scale}
-				images={images}
-				setImages={setImages}
-				selectedImage={selectedImage}
-				selectImage={selectImage}
-				handleUpdate={handleUpdate}
-			/>
-			<div className="flex flex-col bg-zinc-900 gap-4">
-				<div className="flex gap-2">
-					{images.map((img) => (
-						<div key={`preview-${img.id}`}>
-							<div
-								onClick={() => selectImage(img.id)}
-								className={clsx(
-									"hover:cursor-pointer bg-zinc-800 border-2 rounded relative",
-									{
-										"border-blue-500": selectedImage === img.id,
-										"border-zinc-700": selectedImage !== img.id,
-									},
-								)}
-							>
-								<img
-									src={img.src}
-									className="max-w-full h-auto max-h-28 flex-1"
-								/>
-							</div>
-						</div>
-					))}
-				</div>
-				{!!selectedImage && (
-					<div className="flex gap-2">
-						<Button onClick={removeSelected}>
-							<TrashIcon className="size-5" />
-							Delete
-						</Button>
-					</div>
+			<div
+				ref={containerRef}
+				className="bg-zinc-800 sm:rounded sm:mx-4 sm:mb-4"
+			>
+				<Canvas
+					stageRef={stageRef}
+					layerRef={layerRef}
+					trRef={trRef}
+					size={size}
+					scale={scale}
+					shapes={shapes}
+					selectedShape={selectedShape}
+					selectShape={selectShape}
+					updateShape={updateShape}
+					handleUpdate={() => handleUpdate(false)}
+				/>
+			</div>
+			<div className="flex flex-col bg-zinc-900 gap-4 p-4 sm:p-4">
+				{selectedShape && (
+					<Controls
+						shape={findShape(selectedShape)}
+						removeSelected={removeSelected}
+						updateShape={(s) => {
+							updateShape(s);
+							handleUpdate(true);
+						}}
+					/>
 				)}
+				<div className="flex">
+					<button
+						onClick={handleExport}
+						disabled={shapes.length < 1}
+						className="ml-auto flex items-center gap-2 px-4 py-2 rounded bg-primary-700 disabled:bg-zinc-800 font-medium text-sm"
+					>
+						<DownloadIcon className="size-5" />
+						<span className="">Lataa</span>
+					</button>
+				</div>
 			</div>
 		</>
 	);
 };
+
 export default Editor;
