@@ -5,7 +5,6 @@ import {
 import Canvas from "~/components/Editor/Canvas";
 import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
-import useCanvasSize from "~/hooks/useCanvasSize";
 import { resolution } from "~/constants";
 import {
 	TbDownload as DownloadIcon,
@@ -16,6 +15,7 @@ import { Transformer } from "konva/lib/shapes/Transformer";
 import useTextures from "~/hooks/useTextures";
 import { Layer } from "konva/lib/Layer";
 import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
+import useResize from "~/hooks/useResize";
 import Controls from "./Controls";
 
 const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
@@ -55,7 +55,7 @@ const Editor = () => {
 	const [selectedShape, selectShape] = useState<string | null>(null);
 	const { shapes, addShape, updateShape, removeShape, findShape } = useShapes();
 	const containerRef = useRef<HTMLDivElement>(null);
-	const { size, scale } = useCanvasSize();
+	const { size, scale } = useResize(containerRef);
 	const stageRef = useRef<Stage>(null);
 	const layerRef = useRef<Layer>(null);
 	const trRef = useRef<Transformer>(null);
@@ -97,7 +97,6 @@ const Editor = () => {
 
 	const removeSelected = () => {
 		if (!selectedShape) return;
-		console.log(selectedShape);
 		removeShape(selectedShape);
 		selectShape(null);
 		handleUpdate(true);
@@ -117,7 +116,6 @@ const Editor = () => {
 		addShape(newImage);
 		selectShape(newImage.id);
 		handleUpdate(true);
-		console.log(shapes);
 	};
 
 	const addText = () => {
@@ -137,7 +135,6 @@ const Editor = () => {
 		addShape(text);
 		selectShape(text.id);
 		handleUpdate(true);
-		console.log(shapes);
 	};
 
 	const handleExport = () => {
