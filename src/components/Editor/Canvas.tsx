@@ -24,7 +24,7 @@ const Canvas = ({
 	selectedShape,
 	selectShape,
 	updateShape,
-	handleUpdate,
+	updateTexture,
 }: {
 	stageRef: RefObject<Konva.Stage>;
 	layerRef: RefObject<Konva.Layer>;
@@ -35,8 +35,13 @@ const Canvas = ({
 	selectedShape: string | null;
 	selectShape: Dispatch<SetStateAction<string | null>>;
 	updateShape: <T extends ShapeData>(s: T) => void;
-	handleUpdate: () => void;
+	updateTexture: () => void;
 }) => {
+	const onChange = (props: ImageData | TextData) => {
+		updateShape(props);
+		updateTexture();
+	};
+
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
 		vertical: [],
@@ -48,11 +53,6 @@ const Canvas = ({
 		}
 	};
 
-	const onChange = (props: ImageData | TextData) => {
-		updateShape(props);
-		handleUpdate();
-	};
-
 	const renderShape = (shape: ShapeData) => {
 		switch (shape.type) {
 			case "image":
@@ -62,6 +62,7 @@ const Canvas = ({
 						props={shape as ImageData}
 						onSelect={() => selectShape(shape.id)}
 						onChange={onChange}
+						onLoad={updateTexture}
 					/>
 				);
 			case "text":
@@ -71,6 +72,7 @@ const Canvas = ({
 						props={shape as TextData}
 						onSelect={() => selectShape(shape.id)}
 						onChange={onChange}
+						onLoad={updateTexture}
 					/>
 				);
 			default:
@@ -89,13 +91,15 @@ const Canvas = ({
 			onMouseDown={deselect}
 			onTouchStart={deselect}
 		>
-			<Layer ref={layerRef}>{shapes.map((shape) => renderShape(shape))}</Layer>
+			<Layer name="main-layer" ref={layerRef}>
+				{shapes.map((shape) => renderShape(shape))}
+			</Layer>
 			<Layer>
 				<Transformer
 					stageRef={stageRef}
 					trRef={trRef}
 					setLines={setSnapLines}
-					handleUpdate={handleUpdate}
+					onUpdate={updateTexture}
 					selectedShape={selectedShape}
 					anchorSize={isMobile ? 20 : 15}
 				/>

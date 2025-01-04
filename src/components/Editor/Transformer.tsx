@@ -35,14 +35,14 @@ const Transformer = ({
 	stageRef,
 	trRef,
 	setLines,
-	handleUpdate,
+	onUpdate,
 	selectedShape,
 	anchorSize,
 }: {
 	stageRef: React.RefObject<Konva.Stage>;
 	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
-	handleUpdate: () => void;
+	onUpdate: () => void;
 	selectedShape: string | null;
 	anchorSize: number;
 }) => {
@@ -261,7 +261,7 @@ const Transformer = ({
 			ref={trRef}
 			onDragMove={onDragMove}
 			onDragEnd={() => setLines({ horizontal: [], vertical: [] })}
-			onTransformEnd={handleUpdate}
+			onTransformEnd={onUpdate}
 			rotateEnabled={false}
 			borderStroke="#fafafabf"
 			borderStrokeWidth={2}

@@ -1,7 +1,4 @@
-import {
-	useRef,
-	useState,
-} from "react";
+import { useCallback, useRef, useState } from "react";
 import Canvas from "~/components/Editor/Canvas";
 import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
@@ -60,46 +57,15 @@ const Editor = () => {
 	const layerRef = useRef<Layer>(null);
 	const trRef = useRef<Transformer>(null);
 
-	const { updateTexture } = useTextures();
-
-	const upscaled = () => {
-		const stage = stageRef.current;
-		if (!stage || !layerRef.current) return;
-
-		stage.clone();
-		stage.width(resolution.width);
-		stage.height(resolution.height);
-		stage.scaleX(1);
-		stage.scaleY(1);
-
-		const canvas = layerRef.current.toCanvas();
-
-		stage.width(size.width);
-		stage.height(size.height);
-		stage.scaleX(scale);
-		stage.scaleY(scale);
-
-		return canvas;
-	};
-	const handleUpdate = (delay: boolean) => {
-		if (delay) {
-			setTimeout(() => {
-				const cnv = upscaled();
-				if (!cnv) return;
-				updateTexture(cnv);
-			}, 100);
-			return;
-		}
-		const cnv = upscaled();
-		if (!cnv) return;
-		updateTexture(cnv);
-	};
+	const { update } = useTextures();
+	const updateTexture = useCallback(() => {
+		update(layerRef);
+	}, [layerRef, update]);
 
 	const removeSelected = () => {
 		if (!selectedShape) return;
 		removeShape(selectedShape);
 		selectShape(null);
-		handleUpdate(true);
 	};
 
 	const addImage = (img: HTMLImageElement) => {
@@ -115,7 +81,6 @@ const Editor = () => {
 		};
 		addShape(newImage);
 		selectShape(newImage.id);
-		handleUpdate(true);
 	};
 
 	const addText = () => {
@@ -134,7 +99,6 @@ const Editor = () => {
 		};
 		addShape(text);
 		selectShape(text.id);
-		handleUpdate(true);
 	};
 
 	const handleExport = () => {
@@ -180,7 +144,7 @@ const Editor = () => {
 					selectedShape={selectedShape}
 					selectShape={selectShape}
 					updateShape={updateShape}
-					handleUpdate={() => handleUpdate(false)}
+					updateTexture={updateTexture}
 				/>
 			</div>
 			<div className="flex flex-col bg-zinc-900 gap-4 p-4 sm:p-4">
@@ -190,7 +154,7 @@ const Editor = () => {
 						removeSelected={removeSelected}
 						updateShape={(s) => {
 							updateShape(s);
-							handleUpdate(true);
+							updateTexture();
 						}}
 					/>
 				)}

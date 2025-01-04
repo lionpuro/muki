@@ -2,17 +2,22 @@ import Konva from "konva";
 import { useRef } from "react";
 import { Text as KonvaText } from "react-konva";
 import { TextData } from "~/hooks/useShapes";
+import useOnLoadCallback from "~/hooks/useOnLoadCallback";
 
 export const TextComponent = ({
 	props,
 	onSelect,
 	onChange,
+	onLoad,
 }: {
 	props: TextData;
 	onSelect: () => void;
 	onChange: (p: TextData) => void;
+	onLoad: () => void;
 }) => {
 	const textRef = useRef<Konva.Text>(null);
+
+	useOnLoadCallback(onLoad);
 
 	return (
 		<KonvaText

@@ -1,18 +1,25 @@
+import { useEffect } from "react";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Image as KonvaImage } from "react-konva";
-import useImage from "use-image";
+import useImage from "~/hooks/useImage";
 import { ImageData } from "~/hooks/useShapes";
 
 export const ImageComponent = ({
 	props,
 	onSelect,
 	onChange,
+	onLoad,
 }: {
 	props: ImageData;
 	onSelect: (e: KonvaEventObject<MouseEvent | TouchEvent>) => void;
 	onChange: (a: ImageData) => void;
+	onLoad: () => void;
 }) => {
-	const [image] = useImage(props.src);
+	const [image] = useImage(props.src, onLoad);
+
+	useEffect(() => {
+		return () => onLoad();
+	}, [onLoad]);
 
 	return (
 		<KonvaImage
