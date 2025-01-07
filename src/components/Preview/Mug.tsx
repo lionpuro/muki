@@ -32,7 +32,7 @@ const Cylinder = ({ texture }: { texture: Texture }) => {
 			geometry={geometry}
 			position={[0, 1.35, 0.01]}
 		>
-			<meshBasicMaterial transparent map={texture} />
+			<meshPhysicalMaterial transparent map={texture} roughness={0} />
 		</mesh>
 	);
 };
@@ -40,7 +40,7 @@ const Cylinder = ({ texture }: { texture: Texture }) => {
 export const Mug = () => {
 	const { nodes, materials } = useGLTF("/models/mug.glb") as MugGLTF;
 	const material = materials["Mug-Material"];
-	material.roughness = 0.1;
+	material.roughness = 0.0;
 
 	const { texture } = useTextures();
 	return (

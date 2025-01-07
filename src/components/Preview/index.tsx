@@ -1,20 +1,21 @@
 import * as Three from "three";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid, Environment } from "@react-three/drei";
+import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
+import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
 import { Mug } from "./Mug";
+import { useRef } from "react";
 
 const Preview = () => {
+	const controlsRef = useRef<OrbitControlsImpl>(null);
 	return (
-		<div className="flex min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-800">
-			<Canvas
-				orthographic
-				camera={{
-					isPerspectiveCamera: true,
-					fov: 30,
-					position: [0, 0, 10],
-					zoom: 120,
-				}}
-			>
+		<div className="flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-800">
+			<Canvas>
+				<PerspectiveCamera
+					makeDefault
+					fov={35}
+					position={[0, 1, 5]}
+					zoom={0.75}
+				/>
 				<group
 					position={[0, -1.35, 0]}
 					rotation={new Three.Euler(0, Math.PI / 2, 0, "XYZ")}
@@ -30,18 +31,32 @@ const Preview = () => {
 						args={[5, 5]}
 					/>
 				</group>
-				<Environment preset="warehouse" background blur={4} />
+				<directionalLight
+					color={new Three.Color(0xffffff)}
+					intensity={Math.PI * 0.5}
+					position={[5, 0.5, 0]}
+				/>
+				<directionalLight
+					color={new Three.Color(0xffffff)}
+					intensity={Math.PI * 0.5}
+					position={[-5, 1.5, 1]}
+				/>
+				<ambientLight
+					color={new Three.Color(0xffffff)}
+					intensity={Math.PI * 0.5}
+				/>
 				<OrbitControls
+					ref={controlsRef}
 					enableDamping={false}
 					enablePan={false}
-					minDistance={1}
+					minDistance={2}
 					maxDistance={5}
 					minPolarAngle={-5}
 					maxPolarAngle={5}
 					autoRotate={false}
 					target={new Three.Vector3(0, 0, 0)}
 					position={new Three.Vector3(0, 0, 0)}
-					panSpeed={1.1}
+					rotateSpeed={1.1}
 				/>
 			</Canvas>
 		</div>
