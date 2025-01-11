@@ -50,7 +50,11 @@ const Transformer = ({
 		const stage = stageRef.current;
 		if (!stage) return { vertical: [], horizontal: [] };
 
-		const vertical = [0, stage.width() / 2, stage.width()];
+		const sides = [
+			stage.width() / 2 / 2.5,
+			stage.width() - stage.width() / 2 / 2.5,
+		];
+		const vertical = [0, stage.width() / 2, stage.width(), ...sides];
 		const horizontal = [0, stage.height() / 2, stage.height()];
 
 		stage.find(".object").forEach((shape) => {
