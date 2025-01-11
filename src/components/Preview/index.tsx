@@ -1,12 +1,28 @@
 import * as Three from "three";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { Grid, PerspectiveCamera, CameraControls } from "@react-three/drei";
 import { Mug } from "./Mug";
+import { TbRotate360 } from "react-icons/tb";
 import { useRef } from "react";
 
+const closestDivisible = (num: number, div: number) => {
+	if (div < 0) {
+		return Math.floor((num + div + 1) / div) * div;
+	}
+	return Math.floor((num + div - 1) / div) * div;
+};
+
 const Preview = () => {
-	const controlsRef = useRef<OrbitControlsImpl>(null);
+	const controlsRef = useRef<CameraControls>(null);
+
+	const rotate = (angle: number) => {
+		if (!controlsRef.current) return;
+		const ang = controlsRef.current.azimuthAngle;
+		const rad = angle * Three.MathUtils.DEG2RAD;
+		const closest = closestDivisible(ang, rad);
+		const azimuth = closest - ang + rad;
+		controlsRef.current.rotate(azimuth, 0, true);
+	};
 	return (
 		<div className="flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-800">
 			<Canvas>
@@ -45,20 +61,28 @@ const Preview = () => {
 					color={new Three.Color(0xffffff)}
 					intensity={Math.PI * 0.5}
 				/>
-				<OrbitControls
+				<CameraControls
 					ref={controlsRef}
-					enableDamping={false}
-					enablePan={false}
 					minDistance={2}
 					maxDistance={5}
 					minPolarAngle={-5}
 					maxPolarAngle={5}
-					autoRotate={false}
-					target={new Three.Vector3(0, 0, 0)}
-					position={new Three.Vector3(0, 0, 0)}
-					rotateSpeed={1.1}
+					draggingSmoothTime={0}
+					polarRotateSpeed={0.9}
+					azimuthRotateSpeed={0.9}
+					dollyDragInverted={true}
+					dollySpeed={1.25}
+					truckSpeed={0}
 				/>
 			</Canvas>
+			<div className="flex justify-center">
+				<button onClick={() => rotate(90)} className="p-2">
+					<TbRotate360 className="size-6 rotate-[135deg] scale-x-[-1]" />
+				</button>
+				<button onClick={() => rotate(-90)} className="p-2">
+					<TbRotate360 className="size-6 rotate-[225deg]" />
+				</button>
+			</div>
 		</div>
 	);
 };
