@@ -1,13 +1,15 @@
 import { ChangeEventHandler, KeyboardEventHandler, useRef } from "react";
 import { ShapeData, TextData } from "~/hooks/useShapes";
-import { TbTrash as TrashIcon } from "react-icons/tb";
+import { TbTrashFilled as TrashIcon } from "react-icons/tb";
 
 const TextControls = ({
 	props,
 	updateShape,
+	removeSelected,
 }: {
 	props: TextData;
 	updateShape: (s: ShapeData) => void;
+	removeSelected: () => void;
 }) => {
 	const textRef = useRef<HTMLInputElement>(null);
 	const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
@@ -20,24 +22,36 @@ const TextControls = ({
 		}
 	};
 	return (
-		<>
-			<input
-				ref={textRef}
-				name="text"
-				type="text"
-				className="px-3 bg-zinc-800 border border-zinc-700 rounded"
-				value={props.text}
-				onChange={onChange}
-				onKeyDown={onKeyDown}
-			/>
-			<input
-				name="fill"
-				type="color"
-				value={props.fill}
-				onChange={onChange}
-				className="flex border border-zinc-700 rounded bg-transparent"
-			/>
-		</>
+		<div className="flex flex-col">
+			<span className="flex justify-between items-center mb-3">
+				<h2 className="font-semibold">Teksti</h2>
+				<button
+					onClick={removeSelected}
+					className="flex items-center p-2 sm:px-0 gap-1.5 text-sm text-zinc-800 font-medium rounded"
+				>
+					<TrashIcon className="size-5" />
+					<span className="hidden sm:block">Poista</span>
+				</button>
+			</span>
+			<div className="flex gap-2">
+				<input
+					ref={textRef}
+					name="text"
+					type="text"
+					className="py-1 px-3 bg-zinc-50 border border-zinc-300 rounded"
+					value={props.text}
+					onChange={onChange}
+					onKeyDown={onKeyDown}
+				/>
+				<input
+					name="fill"
+					type="color"
+					value={props.fill}
+					onChange={onChange}
+					className="flex border border-zinc-700 rounded bg-transparent"
+				/>
+			</div>
+		</div>
 	);
 };
 
@@ -52,22 +66,18 @@ const Controls = ({
 }) => {
 	if (!shape) return null;
 	return (
-		<div className="flex gap-2">
+		<div className="flex flex-col">
 			{shape.type === "image" && <></>}
 			{shape.type === "text" && (
 				<>
-					<TextControls props={shape as TextData} updateShape={updateShape} />
+					<TextControls
+						props={shape as TextData}
+						updateShape={updateShape}
+						removeSelected={removeSelected}
+					/>
 				</>
 			)}
-			<div className="ml-auto">
-				<button
-					onClick={removeSelected}
-					className="flex items-center gap-2 px-4 py-2 text-sm font-medium rounded bg-zinc-800 hover:bg-zinc-700"
-				>
-					<TrashIcon className="size-5" />
-					Poista
-				</button>
-			</div>
+			<div className="ml-auto"></div>
 		</div>
 	);
 };

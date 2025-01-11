@@ -8,25 +8,12 @@ import {
 	TbTextPlus as TextIcon,
 } from "react-icons/tb";
 import { Stage } from "konva/lib/Stage";
-import { Transformer } from "konva/lib/shapes/Transformer";
 import useTextures from "~/hooks/useTextures";
-import { Layer } from "konva/lib/Layer";
+import type { Transformer } from "konva/lib/shapes/Transformer";
+import type { Layer } from "konva/lib/Layer";
 import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
 import Controls from "./Controls";
-
-const Button = (props: React.ButtonHTMLAttributes<HTMLButtonElement>) => {
-	return (
-		<button
-			className={
-				"flex items-center gap-2 px-4 py-2 text-sm font-medium rounded bg-zinc-800 hover:bg-zinc-700"
-			}
-			{...props}
-		>
-			{props.children}
-		</button>
-	);
-};
 
 const downloadURI = (uri: string, filename: string) => {
 	const link = document.createElement("a");
@@ -91,8 +78,8 @@ const Editor = () => {
 			height: 400,
 			scaleX: 1,
 			scaleY: 1,
-			x: (resolution.width - 200) / 2,
-			y: (resolution.height - 100) / 2,
+			x: Math.floor(Math.random() * 500),
+			y: Math.floor(Math.random() * 200),
 			fill: "#000000",
 			text: "Teksti",
 			fontSize: 280,
@@ -123,16 +110,21 @@ const Editor = () => {
 	};
 
 	return (
-		<>
-			<div className="flex p-2 sm:p-4 gap-2 sm:gap-4">
+		<div className="flex flex-col grow">
+			<div className="flex p-1 bg-zinc-100 border-b border-zinc-300">
 				<FilePicker addImage={addImage} />
-				<Button onClick={addText}>
-					<TextIcon className="size-5" /> Lisää teksti
-				</Button>
+				<button
+					onClick={addText}
+					className={
+						"flex items-center gap-2 px-4 py-2 font-medium hover:text-primary-600 active:text-primary-600"
+					}
+				>
+					<TextIcon className="size-5" /> Teksti
+				</button>
 			</div>
 			<div
 				ref={containerRef}
-				className="bg-zinc-800 sm:rounded sm:mx-4 sm:mb-4"
+				className="border border-zinc-300 bg-zinc-100 rounded m-2 sm:m-4"
 			>
 				<Canvas
 					stageRef={stageRef}
@@ -147,7 +139,7 @@ const Editor = () => {
 					updateTexture={updateTexture}
 				/>
 			</div>
-			<div className="flex flex-col bg-zinc-900 gap-4 p-4 sm:p-4">
+			<div className="flex flex-col bg-zinc-100 gap-4 p-4 sm:p-4 mt-auto">
 				{selectedShape && (
 					<Controls
 						shape={findShape(selectedShape)}
@@ -158,18 +150,18 @@ const Editor = () => {
 						}}
 					/>
 				)}
-				<div className="flex">
-					<button
-						onClick={handleExport}
-						disabled={shapes.length < 1}
-						className="ml-auto flex items-center gap-2 px-4 py-2 rounded bg-primary-700 disabled:bg-zinc-800 font-medium text-sm"
-					>
-						<DownloadIcon className="size-5" />
-						<span className="">Lataa</span>
-					</button>
-				</div>
 			</div>
-		</>
+			<div className="flex">
+				<button
+					onClick={handleExport}
+					disabled={shapes.length < 1}
+					className="ml-auto flex items-center gap-2 px-4 py-2 rounded bg-primary-600 disabled:bg-zinc-200 text-zinc-50 font-medium text-sm"
+				>
+					<DownloadIcon className="size-5" />
+					<span className="">Lataa</span>
+				</button>
+			</div>
+		</div>
 	);
 };
 

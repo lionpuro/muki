@@ -267,15 +267,16 @@ const Transformer = ({
 			onDragEnd={() => setLines({ horizontal: [], vertical: [] })}
 			onTransformEnd={onUpdate}
 			rotateEnabled={false}
-			borderStroke="#fafafabf"
-			borderStrokeWidth={2}
+			borderStroke="#71717a"
+			borderStrokeWidth={1}
 			enabledAnchors={["top-left", "top-right", "bottom-left", "bottom-right"]}
-			anchorStroke="#fafafa"
-			anchorStrokeWidth={2}
-			anchorFill="#6a6ac8"
+			anchorStroke="#71717a"
+			anchorStrokeWidth={1}
+			anchorFill="#fafafa"
 			anchorSize={anchorSize}
-			anchorCornerRadius={15}
-			flipEnabled={true}
+			anchorCornerRadius={20}
+			flipEnabled={false}
+			centeredScaling={false}
 		/>
 	);
 };

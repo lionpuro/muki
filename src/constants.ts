@@ -4,8 +4,8 @@ export const aspectRatio = resolution.height / resolution.width;
 
 export const snap_threshold = 5;
 export const snap_line_style = {
-	stroke: "rgb(0, 161, 255)",
-	strokeWidth: 1,
+	stroke: "#6a6ac8",
+	strokeWidth: 2,
 	name: "guid-line",
 	dash: [4, 6],
 };

@@ -32,7 +32,7 @@ export const TextComponent = ({
 			y={props.y}
 			scaleX={props.scaleX}
 			scaleY={props.scaleY}
-			padding={6}
+			padding={16}
 			onDragEnd={(e) => {
 				onChange({
 					...props,

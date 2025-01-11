@@ -38,10 +38,10 @@ const FilePicker = ({
 		<>
 			<button
 				onClick={() => setModalOpen(!modalOpen)}
-				className="flex items-center gap-2 rounded bg-zinc-800 hover:bg-zinc-700 px-4 py-2 font-medium text-sm"
+				className="flex items-center gap-2 px-4 py-2 font-medium hover:text-primary-600 active:text-primary-600"
 			>
 				<PhotoIcon className="size-5" />
-				Lisää kuva
+				Kuva
 			</button>
 			{modalOpen && (
 				<div
@@ -50,14 +50,14 @@ const FilePicker = ({
 				>
 					<div
 						onClick={(e) => e.stopPropagation()}
-						className="flex flex-col w-full max-w-screen-sm bg-zinc-800 p-6 gap-4 rounded"
+						className="flex flex-col w-full max-w-screen-sm bg-zinc-100 p-6 gap-4 rounded"
 					>
 						<h2 className="text-lg font-bold">Valitse kuva</h2>
 						<input type="file" accept="image/*" onChange={handleChange} />
 						<button
 							onClick={submit}
 							disabled={!image}
-							className="w-fit px-4 py-2 disabled:bg-zinc-700 bg-primary-600 font-medium rounded"
+							className="w-fit px-4 py-2 disabled:bg-zinc-300 bg-primary-600 text-zinc-100 text-sm font-medium rounded"
 						>
 							Lisää kuva
 						</button>

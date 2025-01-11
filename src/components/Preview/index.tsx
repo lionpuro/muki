@@ -24,8 +24,8 @@ const Preview = () => {
 		controlsRef.current.rotate(azimuth, 0, true);
 	};
 	return (
-		<div className="flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-800">
-			<Canvas>
+		<div className="relative p-2 sm:p-4 bg-zinc-100 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-300">
+			<Canvas className="rounded bg-zinc-200 border border-zinc-300">
 				<PerspectiveCamera
 					makeDefault
 					fov={35}
@@ -75,13 +75,15 @@ const Preview = () => {
 					truckSpeed={0}
 				/>
 			</Canvas>
-			<div className="flex justify-center">
-				<button onClick={() => rotate(90)} className="p-2">
-					<TbRotate360 className="size-6 rotate-[135deg] scale-x-[-1]" />
-				</button>
-				<button onClick={() => rotate(-90)} className="p-2">
-					<TbRotate360 className="size-6 rotate-[225deg]" />
-				</button>
+			<div className="absolute left-4 sm:left-8 top-0 h-full flex flex-col justify-center pointer-events-none">
+				<div className="flex flex-col bg-zinc-100 rounded border border-zinc-300 pointer-events-auto">
+					<button onClick={() => rotate(90)} className="p-2">
+						<TbRotate360 className="size-6 rotate-[135deg] scale-x-[-1]" />
+					</button>
+					<button onClick={() => rotate(-90)} className="p-2">
+						<TbRotate360 className="size-6 rotate-[225deg]" />
+					</button>
+				</div>
 			</div>
 		</div>
 	);

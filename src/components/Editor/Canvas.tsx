@@ -81,6 +81,7 @@ const Canvas = ({
 	};
 
 	const isMobile = useMemo(() => size.width < 600, [size]);
+
 	return (
 		<Stage
 			ref={stageRef}
@@ -91,7 +92,7 @@ const Canvas = ({
 			onMouseDown={deselect}
 			onTouchStart={deselect}
 		>
-			<Layer name="main-layer" ref={layerRef}>
+			<Layer ref={layerRef} name="main-layer">
 				{shapes.map((shape) => renderShape(shape))}
 			</Layer>
 			<Layer>
