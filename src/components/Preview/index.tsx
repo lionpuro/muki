@@ -2,7 +2,12 @@ import * as Three from "three";
 import { Canvas } from "@react-three/fiber";
 import { Grid, PerspectiveCamera, CameraControls } from "@react-three/drei";
 import { Mug } from "./Mug";
-import { TbRotate360 } from "react-icons/tb";
+import {
+	MdZoomIn as ZoomInIcon,
+	MdZoomOut as ZoomOutIcon,
+	MdRotateLeft,
+	MdRotateRight,
+} from "react-icons/md";
 import { useRef } from "react";
 
 const closestDivisible = (num: number, div: number) => {
@@ -23,14 +28,31 @@ const Preview = () => {
 		const azimuth = closest - ang + rad;
 		controlsRef.current.rotate(azimuth, 0, true);
 	};
+	const zoom = (step: number) => {
+		if (!controlsRef.current) return;
+		controlsRef.current.dolly(step, true);
+	};
 	return (
-		<div className="relative p-2 sm:p-4 bg-zinc-100 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-300">
-			<Canvas className="rounded bg-zinc-200 border border-zinc-300">
+		<div className="relative bg-zinc-100 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-300">
+			<Canvas>
 				<PerspectiveCamera
 					makeDefault
 					fov={35}
 					position={[0, 1, 5]}
 					zoom={0.75}
+				/>
+				<CameraControls
+					ref={controlsRef}
+					minDistance={2}
+					maxDistance={6}
+					minPolarAngle={0.5}
+					maxPolarAngle={2.5}
+					draggingSmoothTime={0}
+					polarRotateSpeed={0.9}
+					azimuthRotateSpeed={0.9}
+					dollyDragInverted={true}
+					dollySpeed={1.25}
+					truckSpeed={0}
 				/>
 				<group
 					position={[0, -1.35, 0]}
@@ -61,27 +83,20 @@ const Preview = () => {
 					color={new Three.Color(0xffffff)}
 					intensity={Math.PI * 0.5}
 				/>
-				<CameraControls
-					ref={controlsRef}
-					minDistance={2}
-					maxDistance={5}
-					minPolarAngle={-5}
-					maxPolarAngle={5}
-					draggingSmoothTime={0}
-					polarRotateSpeed={0.9}
-					azimuthRotateSpeed={0.9}
-					dollyDragInverted={true}
-					dollySpeed={1.25}
-					truckSpeed={0}
-				/>
 			</Canvas>
-			<div className="absolute left-4 sm:left-8 top-0 h-full flex flex-col justify-center pointer-events-none">
-				<div className="flex flex-col bg-zinc-100 rounded border border-zinc-300 pointer-events-auto">
+			<div className="absolute left-2 sm:left-4 top-0 h-full flex flex-col justify-center pointer-events-none">
+				<div className="flex flex-col bg-zinc-50 rounded border border-zinc-300 pointer-events-auto">
+					<button onClick={() => zoom(1)} className="p-2">
+						<ZoomInIcon className="size-6" />
+					</button>
+					<button onClick={() => zoom(-1)} className="p-2">
+						<ZoomOutIcon className="size-6" />
+					</button>
 					<button onClick={() => rotate(90)} className="p-2">
-						<TbRotate360 className="size-6 rotate-[135deg] scale-x-[-1]" />
+						<MdRotateRight className="size-6" />
 					</button>
 					<button onClick={() => rotate(-90)} className="p-2">
-						<TbRotate360 className="size-6 rotate-[225deg]" />
+						<MdRotateLeft className="size-6" />
 					</button>
 				</div>
 			</div>
