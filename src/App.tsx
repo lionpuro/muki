@@ -1,6 +1,6 @@
 import Editor from "~/components/Editor";
 import Preview from "~/components/Preview";
-import { TextureProvider } from "~/TextureContext";
+import { TextureProvider } from "~/context/TextureContext";
 
 const App = () => {
 	return (

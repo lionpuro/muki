@@ -2,7 +2,7 @@ import { Layer } from "konva/lib/Layer";
 import { RefObject, useCallback, useContext } from "react";
 import { CanvasTexture } from "three";
 import { resolution } from "~/constants";
-import { TextureContext } from "~/TextureContext";
+import { TextureContext } from "~/context/TextureContext";
 
 const toCanvas = (layerRef: RefObject<Layer>) => {
 	const layer = layerRef.current;
