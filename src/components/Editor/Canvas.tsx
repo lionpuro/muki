@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Dispatch, RefObject, SetStateAction, useMemo, useState } from "react";
+import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { Stage, Layer, Line } from "react-konva";
 import ImageComponent from "~/components/Image";
 import Transformer, { SnapLines } from "~/components/Editor/Transformer";
@@ -37,15 +37,15 @@ const Canvas = ({
 	updateShape: <T extends ShapeData>(s: T) => void;
 	updateTexture: () => void;
 }) => {
-	const onChange = (props: ImageData | TextData) => {
-		updateShape(props);
-		updateTexture();
-	};
-
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
 		vertical: [],
 	});
+
+	const onChange = (props: ImageData | TextData) => {
+		updateShape(props);
+		updateTexture();
+	};
 
 	const deselect = (e: ClickEvent) => {
 		if (e.target === stageRef.current) {
@@ -80,8 +80,6 @@ const Canvas = ({
 		}
 	};
 
-	const isMobile = useMemo(() => size.width < 600, [size]);
-
 	return (
 		<Stage
 			ref={stageRef}
@@ -102,7 +100,6 @@ const Canvas = ({
 					setLines={setSnapLines}
 					onUpdate={updateTexture}
 					selectedShape={selectedShape}
-					anchorSize={isMobile ? 20 : 15}
 				/>
 				{snapLines.horizontal.map((line, i) => (
 					<Line key={i} {...line} strokeScaleEnabled={false} />

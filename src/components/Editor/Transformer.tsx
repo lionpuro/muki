@@ -1,6 +1,6 @@
 import Konva from "konva";
 import { LineConfig } from "konva/lib/shapes/Line";
-import { Dispatch, SetStateAction, useEffect } from "react";
+import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { Transformer as KonvaTransformer } from "react-konva";
 import { snap_threshold, snap_line_style } from "~/constants";
 
@@ -37,14 +37,12 @@ const Transformer = ({
 	setLines,
 	onUpdate,
 	selectedShape,
-	anchorSize,
 }: {
 	stageRef: React.RefObject<Konva.Stage>;
 	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
 	onUpdate: () => void;
 	selectedShape: string | null;
-	anchorSize: number;
 }) => {
 	const getLineGuideStops = (excludedShape: Konva.Node) => {
 		const stage = stageRef.current;
@@ -244,6 +242,8 @@ const Transformer = ({
 		selectedNode.setAbsolutePosition(newPos);
 	};
 
+	const onDragEnd = () => setLines({ horizontal: [], vertical: [] });
+
 	// attach to selected
 	useEffect(() => {
 		const tr = trRef.current;
@@ -260,11 +260,15 @@ const Transformer = ({
 		}
 	}, [selectedShape, stageRef, trRef]);
 
+	const mobileMediaQuery = window.matchMedia("(max-width: 639px)");
+	const anchorSize = useMemo(() => {
+		return mobileMediaQuery.matches ? 20 : 15;
+	}, [mobileMediaQuery.matches]);
 	return (
 		<KonvaTransformer
 			ref={trRef}
 			onDragMove={onDragMove}
-			onDragEnd={() => setLines({ horizontal: [], vertical: [] })}
+			onDragEnd={onDragEnd}
 			onTransformEnd={onUpdate}
 			rotateEnabled={false}
 			borderStroke="#71717a"
