@@ -60,11 +60,11 @@ const Editor = () => {
 		const newImage: ImageData = {
 			type: "image",
 			id: nanoid(),
-			src: img.src,
 			width: width,
 			height: height,
 			x: (resolution.width - width) / 2,
 			y: (resolution.height - height) / 2,
+			src: img.src,
 		};
 		addShape(newImage);
 		selectShape(newImage.id);
@@ -83,6 +83,10 @@ const Editor = () => {
 			fill: "#000000",
 			text: "Teksti",
 			fontSize: 280,
+			fontStyle: "normal",
+			fontFamily: "system-ui",
+			align: "left",
+			lineHeight: 1,
 		};
 		addShape(text);
 		selectShape(text.id);

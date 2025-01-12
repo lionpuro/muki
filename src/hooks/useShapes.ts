@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export type ShapeData = {
+type BaseShape = {
 	type: "image" | "text";
 	id: string;
 	x: number;
@@ -9,16 +9,21 @@ export type ShapeData = {
 	height: number;
 	scaleX?: number;
 	scaleY?: number;
-} & Record<string, string | number>;
-
-export type ImageData = ShapeData & {
-	src: string;
 };
 
-export type TextData = ShapeData & {
+export type ShapeData = BaseShape & Record<string, string | number>;
+
+export type ImageData = BaseShape & {
+	src: string;
+};
+export type TextData = BaseShape & {
 	text: string;
-	fontSize: number;
 	fill: string;
+	fontSize: number;
+	fontStyle: "normal" | "bold" | "italic" | "italic bold";
+	fontFamily: string;
+	align: "left" | "center" | "right";
+	lineHeight: number;
 };
 
 export default function useShapes() {
@@ -37,8 +42,12 @@ export default function useShapes() {
 				return {
 					...shape,
 					text: shape.text,
+					fill: shape.fill || "#000000",
 					fontSize: 280,
-					fill: shape.fill || "#000",
+					fontStyle: "normal",
+					fontFamily: "system-ui",
+					align: "left",
+					lineHeight: 1,
 				} as TextData;
 			default:
 				return;

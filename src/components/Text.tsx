@@ -1,8 +1,7 @@
 import Konva from "konva";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { Text as KonvaText } from "react-konva";
 import { TextData } from "~/hooks/useShapes";
-import useOnLoadCallback from "~/hooks/useOnLoadCallback";
 
 export const TextComponent = ({
 	props,
@@ -17,7 +16,13 @@ export const TextComponent = ({
 }) => {
 	const textRef = useRef<Konva.Text>(null);
 
-	useOnLoadCallback(onLoad);
+	useEffect(() => {
+		onLoad();
+	}, [onLoad, props.fontStyle, props.align, props.lineHeight]);
+
+	useEffect(() => {
+		return () => onLoad();
+	}, [onLoad]);
 
 	return (
 		<KonvaText
@@ -28,11 +33,15 @@ export const TextComponent = ({
 			text={props.text}
 			fill={props.fill}
 			fontSize={props.fontSize}
+			fontStyle={props.fontStyle}
+			fontFamily={props.fontFamily}
+			align={props.align}
+			lineHeight={props.lineHeight}
 			x={props.x}
 			y={props.y}
 			scaleX={props.scaleX}
 			scaleY={props.scaleY}
-			padding={16}
+			padding={64}
 			onDragEnd={(e) => {
 				onChange({
 					...props,
