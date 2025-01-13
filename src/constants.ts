@@ -1,5 +1,5 @@
 export const margin = 32;
-export const resolution = { width: 2480, height: 1116 };
+export const resolution = { width: 2835, height: 1181 };
 export const aspectRatio = resolution.height / resolution.width;
 
 export const snap_threshold = 5;

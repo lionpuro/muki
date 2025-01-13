@@ -44,7 +44,7 @@ export const Mug = () => {
 
 	const { texture } = useTextures();
 	return (
-		<>
+		<group scale={[1, 0.94, 1]}>
 			<group
 				position={[0, -0.1, 0.01]}
 				rotation={[0, Math.PI, 0]}
@@ -57,7 +57,7 @@ export const Mug = () => {
 				/>
 			</group>
 			<Cylinder texture={texture} />
-		</>
+		</group>
 	);
 };
 
