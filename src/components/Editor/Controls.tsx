@@ -1,20 +1,19 @@
 import {
 	ButtonHTMLAttributes,
-	ChangeEventHandler,
+	ChangeEvent,
 	KeyboardEventHandler,
 	useRef,
 } from "react";
 import { ShapeData, TextData } from "~/hooks/useShapes";
 import {
 	MdDelete as TrashIcon,
-	MdFormatBold as BoldIcon,
-	MdFormatItalic as ItalicIcon,
 	MdFormatLineSpacing as LineHeightIcon,
 	MdFormatAlignLeft as AlignLeftIcon,
 	MdFormatAlignCenter as AlignCenterIcon,
 	MdFormatAlignRight as AlignRightIcon,
 } from "react-icons/md";
 import clsx from "clsx";
+import { FontPicker, Variant } from "../FontPicker";
 
 type ButtonProps = Omit<
 	ButtonHTMLAttributes<HTMLButtonElement>,
@@ -23,39 +22,20 @@ type ButtonProps = Omit<
 	selected?: boolean;
 };
 
-const Button = ({ selected, children, ...props }: ButtonProps) => {
+export const Button = ({ selected, children, ...props }: ButtonProps) => {
 	return (
 		<button
 			className={clsx(
-				"grow flex justify-center items-center p-2 bg-zinc-100 text-zinc-800",
-				{ "bg-zinc-200": selected === true },
+				"grow flex justify-center items-center p-2 bg-zinc-100 text-zinc-800 border-2 rounded",
+				{ "border-primary-400": selected === true },
+				{ "border-zinc-300": !selected },
+				"disabled:bg-zinc-200 disabled:text-zinc-500",
 			)}
 			{...props}
 		>
 			{children}
 		</button>
 	);
-};
-
-type FontStyle = TextData["fontStyle"];
-
-const getNewStyle = (
-	current: FontStyle,
-	selected: Extract<FontStyle, "bold" | "italic">,
-): FontStyle => {
-	switch (current) {
-		case selected:
-			return "normal";
-		case "normal":
-			return selected;
-		case "italic":
-			return "italic bold";
-		case "bold":
-			return "italic bold";
-		case "italic bold":
-			return selected === "italic" ? "bold" : "italic";
-	}
-	return selected;
 };
 
 const TextControls = ({
@@ -68,14 +48,15 @@ const TextControls = ({
 	removeSelected: () => void;
 }) => {
 	const textRef = useRef<HTMLTextAreaElement>(null);
+
 	const updateProp = <K extends keyof TextData>(key: K, value: TextData[K]) => {
 		updateShape({ ...props, [key]: value });
 	};
-	const onChange: ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement> = (
-		e,
-	) => {
+
+	const onChange = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
 		updateShape({ ...props, [e.target.name]: e.target.value });
 	};
+
 	const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = (e) => {
 		if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
 			if (!textRef.current) return;
@@ -83,9 +64,10 @@ const TextControls = ({
 		}
 	};
 
-	const toggleFontStyle = (style: Extract<FontStyle, "bold" | "italic">) => {
-		updateProp("fontStyle", getNewStyle(props.fontStyle, style));
+	const selectFont = (font: { family: string; variant: Variant }) => {
+		updateShape({ ...props, fontFamily: font.family, fontStyle: font.variant });
 	};
+
 	return (
 		<div className="flex flex-col gap-2">
 			<span className="flex justify-between items-center mb-3">
@@ -109,8 +91,18 @@ const TextControls = ({
 					onKeyDown={onKeyDown}
 				/>
 			</div>
-			<div className="flex justify-between gap-px bg-zinc-300 border border-zinc-300 rounded w-full sm:w-1/2 overflow-hidden">
-				<Button>
+			<div className="flex flex-col w-full sm:w-1/2">
+				<span className="py-2 px-1 font-semibold text-sm">Fontti</span>
+				<FontPicker
+					current={{
+						family: props.fontFamily,
+						variant: props.fontStyle,
+					}}
+					setFont={selectFont}
+				/>
+			</div>
+			<div className="flex justify-between gap-2 w-full sm:w-1/2 overflow-hidden">
+				<Button disabled={true}>
 					<LineHeightIcon className="size-6" />
 				</Button>
 
@@ -131,23 +123,6 @@ const TextControls = ({
 					onClick={() => updateProp("align", "right")}
 				>
 					<AlignRightIcon className="size-6" />
-				</Button>
-
-				<Button
-					selected={
-						props.fontStyle === "bold" || props.fontStyle === "italic bold"
-					}
-					onClick={() => toggleFontStyle("bold")}
-				>
-					<BoldIcon className="size-6" />
-				</Button>
-				<Button
-					selected={
-						props.fontStyle === "italic" || props.fontStyle === "italic bold"
-					}
-					onClick={() => toggleFontStyle("italic")}
-				>
-					<ItalicIcon className="size-6" />
 				</Button>
 			</div>
 			<input
@@ -175,13 +150,11 @@ const Controls = ({
 		<div className="flex flex-col">
 			{shape.type === "image" && <></>}
 			{shape.type === "text" && (
-				<>
-					<TextControls
-						props={shape as TextData}
-						updateShape={updateShape}
-						removeSelected={removeSelected}
-					/>
-				</>
+				<TextControls
+					props={shape as TextData}
+					updateShape={updateShape}
+					removeSelected={removeSelected}
+				/>
 			)}
 		</div>
 	);

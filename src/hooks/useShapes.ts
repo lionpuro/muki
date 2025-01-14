@@ -44,8 +44,8 @@ export default function useShapes() {
 					text: shape.text,
 					fill: shape.fill || "#000000",
 					fontSize: 280,
-					fontStyle: "normal",
-					fontFamily: "system-ui",
+					fontStyle: shape.fontStyle,
+					fontFamily: shape.fontFamily,
 					align: "left",
 					lineHeight: 1,
 				} as TextData;

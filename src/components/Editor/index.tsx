@@ -4,9 +4,9 @@ import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
 import { resolution } from "~/constants";
 import {
-	TbDownload as DownloadIcon,
-	TbTextPlus as TextIcon,
-} from "react-icons/tb";
+	MdDownload as DownloadIcon,
+	MdTextFields as TextIcon,
+} from "react-icons/md";
 import { Stage } from "konva/lib/Stage";
 import useTextures from "~/hooks/useTextures";
 import type { Transformer } from "konva/lib/shapes/Transformer";
@@ -14,6 +14,7 @@ import type { Layer } from "konva/lib/Layer";
 import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
 import Controls from "./Controls";
+import loadFont from "~/components/FontPicker/loadFont";
 
 const downloadURI = (uri: string, filename: string) => {
 	const link = document.createElement("a");
@@ -81,15 +82,17 @@ const Editor = () => {
 			x: Math.floor(Math.random() * 500),
 			y: Math.floor(Math.random() * 200),
 			fill: "#000000",
-			text: "Teksti",
+			text: "Oma teksti",
 			fontSize: 280,
 			fontStyle: "normal",
-			fontFamily: "system-ui",
+			fontFamily: "Nunito",
 			align: "left",
 			lineHeight: 1,
 		};
-		addShape(text);
-		selectShape(text.id);
+		loadFont("Nunito", "normal", () => {
+			addShape(text);
+			selectShape(text.id);
+		});
 	};
 
 	const handleExport = () => {
@@ -115,33 +118,40 @@ const Editor = () => {
 
 	return (
 		<div className="flex flex-col grow">
-			<div className="flex p-1 bg-zinc-100 border-b border-zinc-300">
+			<div className="flex p-2 sm:px-2 gap-2 bg-zinc-100 border-b border-zinc-300 text-zinc-800">
 				<FilePicker addImage={addImage} />
 				<button
 					onClick={addText}
 					className={
-						"flex items-center gap-2 px-4 py-2 font-medium hover:text-primary-600 active:text-primary-600"
+						"flex items-center gap-2 p-2 hover:text-primary-600 active:text-primary-600 text-sm font-semibold"
 					}
 				>
 					<TextIcon className="size-5" /> Teksti
 				</button>
+				<button
+					onClick={handleExport}
+					disabled={shapes.length < 1}
+					className="ml-auto flex items-center gap-2 p-2 sm:px-3 rounded bg-primary-500 hover:bg-primary-600 disabled:bg-zinc-400 text-zinc-100 font-semibold text-sm"
+				>
+					<DownloadIcon className="size-6" />
+					<span className="hidden sm:block mr-1">Lataa</span>
+				</button>
 			</div>
-			<div
-				ref={containerRef}
-				className="border border-zinc-300 bg-zinc-100 rounded m-2 sm:m-4"
-			>
-				<Canvas
-					stageRef={stageRef}
-					layerRef={layerRef}
-					trRef={trRef}
-					size={size}
-					scale={scale}
-					shapes={shapes}
-					selectedShape={selectedShape}
-					selectShape={selectShape}
-					updateShape={updateShape}
-					updateTexture={updateTexture}
-				/>
+			<div className="bg-zinc-100 rounded m-2 sm:m-4">
+				<div ref={containerRef}>
+					<Canvas
+						stageRef={stageRef}
+						layerRef={layerRef}
+						trRef={trRef}
+						size={size}
+						scale={scale}
+						shapes={shapes}
+						selectedShape={selectedShape}
+						selectShape={selectShape}
+						updateShape={updateShape}
+						updateTexture={updateTexture}
+					/>
+				</div>
 			</div>
 			<div className="flex flex-col bg-zinc-100 gap-4 p-4 sm:p-4 mt-auto">
 				{selectedShape && (
@@ -155,16 +165,7 @@ const Editor = () => {
 					/>
 				)}
 			</div>
-			<div className="flex">
-				<button
-					onClick={handleExport}
-					disabled={shapes.length < 1}
-					className="ml-auto flex items-center gap-2 px-4 py-2 rounded bg-primary-600 disabled:bg-zinc-200 text-zinc-50 font-medium text-sm"
-				>
-					<DownloadIcon className="size-5" />
-					<span className="">Lataa</span>
-				</button>
-			</div>
+			<div className="flex"></div>
 		</div>
 	);
 };
