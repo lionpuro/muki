@@ -11,10 +11,8 @@ import {
 import { useRef } from "react";
 
 const closestDivisible = (num: number, div: number) => {
-	if (div < 0) {
-		return Math.floor((num + div + 1) / div) * div;
-	}
-	return Math.floor((num + div - 1) / div) * div;
+	const offsetDiv = div < 0 ? div + 1 : div - 1;
+	return Math.floor((num + offsetDiv) / div) * div;
 };
 
 const Preview = () => {
@@ -33,7 +31,7 @@ const Preview = () => {
 		controlsRef.current.dolly(step, true);
 	};
 	return (
-		<div className="relative bg-zinc-100 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-zinc-300">
+		<div className="relative bg-base-50 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-base-200">
 			<Canvas>
 				<PerspectiveCamera
 					makeDefault
@@ -85,7 +83,7 @@ const Preview = () => {
 				/>
 			</Canvas>
 			<div className="absolute left-2 sm:left-4 top-0 h-full flex flex-col justify-center pointer-events-none">
-				<div className="flex flex-col bg-zinc-50 rounded border border-zinc-300 pointer-events-auto">
+				<div className="flex flex-col bg-base-50 rounded border border-base-200 pointer-events-auto">
 					<button onClick={() => zoom(1)} className="p-2">
 						<ZoomInIcon className="size-6" />
 					</button>

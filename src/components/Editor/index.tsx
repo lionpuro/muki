@@ -118,7 +118,7 @@ const Editor = () => {
 
 	return (
 		<div className="flex flex-col grow">
-			<div className="flex p-2 sm:px-2 gap-2 bg-zinc-100 border-b border-zinc-300 text-zinc-800">
+			<div className="flex p-2 sm:px-2 gap-2 bg-base-50 border-b border-base-200 text-base-900">
 				<FilePicker addImage={addImage} />
 				<button
 					onClick={addText}
@@ -131,13 +131,13 @@ const Editor = () => {
 				<button
 					onClick={handleExport}
 					disabled={shapes.length < 1}
-					className="ml-auto flex items-center gap-2 p-2 sm:px-3 rounded bg-primary-500 hover:bg-primary-600 disabled:bg-zinc-400 text-zinc-100 font-semibold text-sm"
+					className="ml-auto flex items-center gap-2 p-2 sm:px-3 rounded bg-primary-500 hover:bg-primary-600 disabled:bg-base-400 text-base-50 font-semibold text-sm"
 				>
 					<DownloadIcon className="size-6" />
 					<span className="hidden sm:block mr-1">Lataa</span>
 				</button>
 			</div>
-			<div className="bg-zinc-100 rounded m-2 sm:m-4">
+			<div className="bg-base-50 rounded m-2 sm:m-4">
 				<div ref={containerRef}>
 					<Canvas
 						stageRef={stageRef}
@@ -153,7 +153,7 @@ const Editor = () => {
 					/>
 				</div>
 			</div>
-			<div className="flex flex-col bg-zinc-100 gap-4 p-4 sm:p-4 mt-auto">
+			<div className="flex flex-col bg-base-50 gap-4 p-4 sm:p-4 mt-auto">
 				{selectedShape && (
 					<Controls
 						shape={findShape(selectedShape)}

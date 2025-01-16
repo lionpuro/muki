@@ -59,7 +59,7 @@ const FilePicker = ({
 						<button
 							onClick={submit}
 							disabled={!image}
-							className="w-fit px-4 py-2 disabled:bg-zinc-300 bg-primary-500 hover:bg-primary-600 text-zinc-100 text-sm font-semibold rounded"
+							className="w-fit px-4 py-2 disabled:bg-base-400 bg-primary-500 hover:bg-primary-600 text-base-50 text-sm font-semibold rounded"
 						>
 							Lisää kuva
 						</button>

@@ -26,12 +26,12 @@ export const Button = ({ selected, children, ...props }: ButtonProps) => {
 	return (
 		<button
 			className={clsx(
-				"grow flex justify-center items-center p-2 bg-zinc-100",
-				"text-zinc-800 border-2 rounded",
-				"disabled:bg-zinc-200 disabled:text-zinc-500",
+				"grow flex justify-center items-center p-2",
+				"text-base-800 border-2 rounded",
+				"disabled:bg-base-200 disabled:text-base-500",
 				{
 					"border-primary-400": selected === true,
-					"border-zinc-300": !selected,
+					"border-base-200": !selected,
 				},
 			)}
 			{...props}
@@ -77,7 +77,7 @@ const TextControls = ({
 				<h2 className="font-semibold">Muokkaa tekstiä</h2>
 				<button
 					onClick={removeSelected}
-					className="flex items-center p-2 sm:px-0 gap-1.5 text-sm text-zinc-800 hover:text-[#f75e68] font-medium rounded"
+					className="flex items-center p-2 sm:px-0 gap-1.5 text-sm text-base-800 hover:text-[#f75e68] font-medium rounded"
 				>
 					<TrashIcon className="size-5" />
 					<span className="hidden sm:block">Poista</span>
@@ -87,7 +87,7 @@ const TextControls = ({
 				<textarea
 					ref={textRef}
 					name="text"
-					className="w-full sm:w-1/2 py-1 px-3 bg-zinc-50 border border-zinc-300 rounded"
+					className="w-full sm:w-1/2 py-1 px-3 bg-base-50 border border-base-200 rounded"
 					style={{ resize: "none" }}
 					value={props.text}
 					onChange={onChange}
@@ -129,7 +129,7 @@ const TextControls = ({
 				type="color"
 				value={props.fill}
 				onChange={onChange}
-				className="flex border border-zinc-700 rounded bg-transparent"
+				className="flex border border-base-700 rounded bg-transparent"
 			/>
 		</div>
 	);

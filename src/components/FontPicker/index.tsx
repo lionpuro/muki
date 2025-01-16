@@ -88,7 +88,7 @@ export const FontPicker = ({
 					value={current.family}
 					onValueChange={(v) => selectFamily(v)}
 				>
-					<SelectTrigger className="text-base bg-zinc-50">
+					<SelectTrigger className="text-base bg-base-50">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
