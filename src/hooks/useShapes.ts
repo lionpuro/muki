@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { FontVariant } from "~/components/FontPicker";
 
 type BaseShape = {
 	type: "image" | "text";
@@ -20,7 +21,7 @@ export type TextData = BaseShape & {
 	text: string;
 	fill: string;
 	fontSize: number;
-	fontStyle: "normal" | "bold" | "italic" | "italic bold";
+	fontStyle: FontVariant;
 	fontFamily: string;
 	align: "left" | "center" | "right";
 	lineHeight: number;

@@ -1,10 +1,10 @@
-import { Variant } from "~/components/FontPicker";
+import type { FontVariant } from "~/components/FontPicker";
 import { fonts } from "~/constants";
 
 export default function loadFont(
 	family: string,
-	variant: Variant,
-	callback: () => void,
+	variant: FontVariant,
+	callback?: () => void,
 ) {
 	const font = fonts.find((f) => f.family === family);
 	if (!font) return;
@@ -18,9 +18,14 @@ export default function loadFont(
 		link.rel = "stylesheet";
 		link.id = fontID;
 		link.href = url;
-		link.onload = callback;
+		console.log("loading font:", family, variant);
+		if (callback) {
+			link.onload = callback;
+		}
 		document.head.appendChild(link);
 		return;
 	}
-	callback();
+	if (callback) {
+		callback();
+	}
 }

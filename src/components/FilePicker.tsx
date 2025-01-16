@@ -1,5 +1,13 @@
 import { useState } from "react";
-import { TbPhotoPlus as PhotoIcon } from "react-icons/tb";
+import { MdPhoto as PhotoIcon } from "react-icons/md";
+import {
+	Dialog,
+	DialogContent,
+	DialogDescription,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "~/components/ui/dialog";
 
 const FilePicker = ({
 	addImage,
@@ -27,43 +35,37 @@ const FilePicker = ({
 			};
 		};
 	};
-	const [modalOpen, setModalOpen] = useState(false);
+	const [isOpen, setIsOpen] = useState(false);
 
 	const submit = () => {
 		if (!image) return;
 		addImage(image);
-		setModalOpen(false);
+		setIsOpen(false);
 	};
 	return (
 		<>
-			<button
-				onClick={() => setModalOpen(!modalOpen)}
-				className="flex items-center gap-2 px-4 py-2 font-medium hover:text-primary-600 active:text-primary-600"
-			>
-				<PhotoIcon className="size-5" />
-				Kuva
-			</button>
-			{modalOpen && (
-				<div
-					onClick={() => setModalOpen(false)}
-					className="z-50 absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center"
-				>
-					<div
-						onClick={(e) => e.stopPropagation()}
-						className="flex flex-col w-full max-w-screen-sm bg-zinc-100 p-6 gap-4 rounded"
-					>
-						<h2 className="text-lg font-bold">Valitse kuva</h2>
+			<Dialog open={isOpen} onOpenChange={(v) => setIsOpen(v)}>
+				<DialogTrigger className="flex items-center gap-2 p-2 hover:text-primary-600 active:text-primary-600 text-sm font-semibold">
+					<PhotoIcon className="size-5" />
+					Kuva
+				</DialogTrigger>
+				<DialogContent>
+					<DialogHeader>
+						<DialogTitle>Valitse kuva</DialogTitle>
+						<DialogDescription visuallyHidden>Valitse kuva</DialogDescription>
+					</DialogHeader>
+					<div className="flex flex-col gap-4">
 						<input type="file" accept="image/*" onChange={handleChange} />
 						<button
 							onClick={submit}
 							disabled={!image}
-							className="w-fit px-4 py-2 disabled:bg-zinc-300 bg-primary-600 text-zinc-100 text-sm font-medium rounded"
+							className="w-fit px-4 py-2 disabled:bg-zinc-300 bg-primary-500 hover:bg-primary-600 text-zinc-100 text-sm font-semibold rounded"
 						>
 							Lisää kuva
 						</button>
 					</div>
-				</div>
-			)}
+				</DialogContent>
+			</Dialog>
 		</>
 	);
 };

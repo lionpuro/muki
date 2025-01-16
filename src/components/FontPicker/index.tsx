@@ -1,30 +1,36 @@
-import { useState } from "react";
 import {
 	MdFormatBold as BoldIcon,
 	MdFormatItalic as ItalicIcon,
 } from "react-icons/md";
-import { ImFont as FontIcon } from "react-icons/im";
 import { Button } from "~/components/Editor/Controls";
 import { fonts } from "~/constants";
-import loadFont from "./loadFont";
+import loadFont from "~/components/FontPicker/loadFont";
+import {
+	Select,
+	SelectTrigger,
+	SelectValue,
+	SelectContent,
+	SelectItem,
+	SelectGroup,
+} from "~/components/ui/select";
 
 export type Font = {
 	family: string;
 	urlName: string;
-	variants: Variant[];
+	variants: FontVariant[];
 };
 
-export type Variant = "normal" | "italic" | "bold" | "italic bold";
+export type FontVariant = "normal" | "italic" | "bold" | "italic bold";
 
 export type SelectedFont = {
 	family: string;
-	variant: Variant;
+	variant: FontVariant;
 };
 
 const getVariant = (
-	current: Variant,
-	selected: Extract<Variant, "bold" | "italic">,
-): Variant => {
+	current: FontVariant,
+	selected: Extract<FontVariant, "bold" | "italic">,
+): FontVariant => {
 	switch (current) {
 		case selected:
 			return "normal";
@@ -44,8 +50,8 @@ export const FontPicker = ({
 	current,
 	setFont,
 }: {
-	current: { family: string; variant: Variant };
-	setFont: (font: { family: string; variant: Variant }) => void;
+	current: { family: string; variant: FontVariant };
+	setFont: (font: { family: string; variant: FontVariant }) => void;
 }) => {
 	const selectFamily = (fam: string) => {
 		const font = fonts.find((f) => f.family === fam);
@@ -55,7 +61,7 @@ export const FontPicker = ({
 		});
 	};
 
-	const selectVariant = (val: Extract<Variant, "bold" | "italic">) => {
+	const selectVariant = (val: Extract<FontVariant, "bold" | "italic">) => {
 		const newVariant = getVariant(current.variant, val);
 		const available = fonts
 			.find((f) => f.family === current.family)
@@ -68,51 +74,38 @@ export const FontPicker = ({
 		});
 	};
 
-	const [open, setOpen] = useState(false);
-	const handleOpen = () => {
+	const onOpen = () => {
 		fonts.forEach((font) => {
-			loadFont(font.family, "normal", () => {});
+			loadFont(font.family, "normal");
 		});
-		setOpen(!open);
 	};
 
 	return (
 		<div className="grow flex gap-2">
-			<button
-				onClick={handleOpen}
-				className="flex items-center justify-center gap-2 w-[calc(50%-0.25rem)] border-2 border-zinc-300 rounded font-medium"
-			>
-				<FontIcon className="size-4" />
-				Valitse fontti
-			</button>
-			{!!open && (
-				<div
-					onClick={() => setOpen(false)}
-					className="z-50 absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center"
+			<div className="flex w-[calc(50%-0.25rem)]">
+				<Select
+					onOpenChange={onOpen}
+					value={current.family}
+					onValueChange={(v) => selectFamily(v)}
 				>
-					<div
-						onClick={(e) => e.stopPropagation()}
-						className="flex flex-col w-full max-w-screen-sm bg-zinc-100 rounded overflow-hidden"
-					>
-						<ul className=" flex flex-col bg-zinc-50">
+					<SelectTrigger className="text-base bg-zinc-50">
+						<SelectValue />
+					</SelectTrigger>
+					<SelectContent>
+						<SelectGroup>
 							{fonts.map((font) => (
-								<li
+								<SelectItem
 									key={font.family}
-									onClick={() => {
-										selectFamily(font.family);
-										setOpen(false);
-									}}
-									style={{ fontFamily: font.family }}
-									className={`cursor-pointer py-3 px-6 text-2xl ${current.family === font.family ? "bg-zinc-200 bg-opacity-70" : ""} hover:bg-zinc-200`}
+									value={font.family}
+									className="text-base"
 								>
-									<span>{font.family}</span>
-								</li>
+									<span style={{ fontFamily: font.family }}>{font.family}</span>
+								</SelectItem>
 							))}
-						</ul>
-					</div>
-				</div>
-			)}
-
+						</SelectGroup>
+					</SelectContent>
+				</Select>
+			</div>
 			<Button
 				disabled={
 					!fonts

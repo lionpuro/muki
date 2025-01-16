@@ -3,9 +3,9 @@ import useFontObserver, { FontFace } from "~/hooks/useFontObserver";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Text as KonvaText } from "react-konva";
 import { TextData } from "~/hooks/useShapes";
-import { Variant } from "./FontPicker";
+import { FontVariant } from "~/components/FontPicker";
 
-function getFontFace(family: string, variant: Variant): FontFace {
+function getFontFace(family: string, variant: FontVariant): FontFace {
 	switch (variant) {
 		case "italic bold":
 			return {

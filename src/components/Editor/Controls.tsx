@@ -7,13 +7,13 @@ import {
 import { ShapeData, TextData } from "~/hooks/useShapes";
 import {
 	MdDelete as TrashIcon,
-	MdFormatLineSpacing as LineHeightIcon,
+	//MdFormatLineSpacing as LineHeightIcon,
 	MdFormatAlignLeft as AlignLeftIcon,
 	MdFormatAlignCenter as AlignCenterIcon,
 	MdFormatAlignRight as AlignRightIcon,
 } from "react-icons/md";
 import clsx from "clsx";
-import { FontPicker, Variant } from "../FontPicker";
+import { FontPicker, FontVariant } from "~/components/FontPicker";
 
 type ButtonProps = Omit<
 	ButtonHTMLAttributes<HTMLButtonElement>,
@@ -26,10 +26,13 @@ export const Button = ({ selected, children, ...props }: ButtonProps) => {
 	return (
 		<button
 			className={clsx(
-				"grow flex justify-center items-center p-2 bg-zinc-100 text-zinc-800 border-2 rounded",
-				{ "border-primary-400": selected === true },
-				{ "border-zinc-300": !selected },
+				"grow flex justify-center items-center p-2 bg-zinc-100",
+				"text-zinc-800 border-2 rounded",
 				"disabled:bg-zinc-200 disabled:text-zinc-500",
+				{
+					"border-primary-400": selected === true,
+					"border-zinc-300": !selected,
+				},
 			)}
 			{...props}
 		>
@@ -64,7 +67,7 @@ const TextControls = ({
 		}
 	};
 
-	const selectFont = (font: { family: string; variant: Variant }) => {
+	const selectFont = (font: { family: string; variant: FontVariant }) => {
 		updateShape({ ...props, fontFamily: font.family, fontStyle: font.variant });
 	};
 
@@ -102,10 +105,6 @@ const TextControls = ({
 				/>
 			</div>
 			<div className="flex justify-between gap-2 w-full sm:w-1/2 overflow-hidden">
-				<Button disabled={true}>
-					<LineHeightIcon className="size-6" />
-				</Button>
-
 				<Button
 					selected={props.align === "left"}
 					onClick={() => updateProp("align", "left")}
