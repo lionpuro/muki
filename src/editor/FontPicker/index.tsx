@@ -2,9 +2,9 @@ import {
 	MdFormatBold as BoldIcon,
 	MdFormatItalic as ItalicIcon,
 } from "react-icons/md";
-import { Button } from "~/components/Editor/Controls";
+import { Button } from "~/editor/Controls";
 import { fonts } from "~/constants";
-import loadFont from "~/components/FontPicker/loadFont";
+import loadFont from "~/editor/FontPicker/loadFont";
 import {
 	Select,
 	SelectTrigger,

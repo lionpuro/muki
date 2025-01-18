@@ -31,7 +31,7 @@ const Preview = () => {
 		controlsRef.current.dolly(step, true);
 	};
 	return (
-		<div className="relative bg-base-50 flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-base-200">
+		<div className="relative bg-base-white flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-base-200">
 			<Canvas>
 				<PerspectiveCamera
 					makeDefault
@@ -83,7 +83,7 @@ const Preview = () => {
 				/>
 			</Canvas>
 			<div className="absolute left-2 sm:left-4 top-0 h-full flex flex-col justify-center pointer-events-none">
-				<div className="flex flex-col bg-base-50 rounded border border-base-200 pointer-events-auto">
+				<div className="flex flex-col bg-base-100 text-base-800 rounded-md pointer-events-auto">
 					<button onClick={() => zoom(1)} className="p-2">
 						<ZoomInIcon className="size-6" />
 					</button>

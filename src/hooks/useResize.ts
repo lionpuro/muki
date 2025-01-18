@@ -1,5 +1,5 @@
 import { RefObject, useEffect, useState } from "react";
-import { Resolution } from "~/components/Editor/Canvas";
+import { Resolution } from "~/editor/Canvas";
 import { aspectRatio, resolution } from "~/constants";
 import useDebounce from "~/hooks/useDebounce";
 
