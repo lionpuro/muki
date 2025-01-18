@@ -5,7 +5,7 @@ import {
 	ReactNode,
 	useRef,
 } from "react";
-import { ShapeData, TextData } from "~/hooks/useShapes";
+import type { ShapeData, TextData } from "~/hooks/useShapes";
 import {
 	MdDelete as TrashIcon,
 	//MdFormatLineSpacing as LineHeightIcon,
@@ -14,8 +14,8 @@ import {
 	MdFormatAlignRight as AlignRightIcon,
 } from "react-icons/md";
 import clsx from "clsx";
-import { FontPicker, FontVariant } from "~/editor/font-picker";
-import { ColorPicker } from "~/editor/color-picker";
+import { FontPicker, FontVariant } from "~/controls/font-picker";
+import { ColorPicker } from "~/controls/color-picker";
 
 type ButtonProps = Omit<
 	ButtonHTMLAttributes<HTMLButtonElement>,

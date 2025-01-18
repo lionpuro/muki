@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { FontVariant } from "~/editor/font-picker";
+import type { FontVariant } from "~/controls/font-picker";
 
 type BaseShape = {
 	type: "image" | "text";

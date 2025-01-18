@@ -1,4 +1,4 @@
-import type { FontVariant } from "~/editor/font-picker";
+import type { FontVariant } from "~/controls/font-picker";
 import { fonts } from "~/constants";
 
 export default function loadFont(
