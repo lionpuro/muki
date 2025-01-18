@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from "react";
+import { FormEvent, useCallback, useRef, useState } from "react";
 import Canvas from "~/components/Editor/Canvas";
 import { nanoid } from "nanoid";
 import FilePicker from "~/components/FilePicker";
@@ -15,6 +15,8 @@ import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
 import Controls from "./Controls";
 import loadFont from "~/components/FontPicker/loadFont";
+import { Textarea } from "~/components/ui/textarea";
+import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
 
 const downloadURI = (uri: string, filename: string) => {
 	const link = document.createElement("a");
@@ -71,8 +73,8 @@ const Editor = () => {
 		selectShape(newImage.id);
 	};
 
-	const addText = () => {
-		const text: TextData = {
+	const addText = (text: string) => {
+		const newText: TextData = {
 			type: "text",
 			id: nanoid(),
 			width: 800,
@@ -82,7 +84,7 @@ const Editor = () => {
 			x: Math.floor(Math.random() * 500),
 			y: Math.floor(Math.random() * 200),
 			fill: "#000000",
-			text: "Oma teksti",
+			text: text,
 			fontSize: 280,
 			fontStyle: "normal",
 			fontFamily: "Nunito",
@@ -90,8 +92,8 @@ const Editor = () => {
 			lineHeight: 1,
 		};
 		loadFont("Nunito", "normal", () => {
-			addShape(text);
-			selectShape(text.id);
+			addShape(newText);
+			selectShape(newText.id);
 		});
 	};
 
@@ -116,18 +118,41 @@ const Editor = () => {
 		trRef.current?.show();
 	};
 
+	const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const text = e.currentTarget.text.value;
+		if (text) {
+			addText(text);
+			setPopoverOpen(false);
+		}
+	};
+	const [popoverOpen, setPopoverOpen] = useState(false);
 	return (
 		<div className="grow flex flex-col">
 			<div className="flex p-2 sm:px-2 gap-2 bg-base-white border-b border-base-200 text-base-900">
 				<FilePicker addImage={addImage} />
-				<button
-					onClick={addText}
-					className={
-						"flex items-center gap-2 p-2 hover:text-primary-600 active:text-primary-600 text-sm font-semibold"
-					}
-				>
-					<TextIcon className="size-5" /> Teksti
-				</button>
+				<Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
+					<PopoverTrigger asChild>
+						<button
+							className={
+								"flex items-center gap-2 p-2 hover:text-primary-600 active:text-primary-600 text-sm font-semibold"
+							}
+						>
+							<TextIcon className="size-5" /> Teksti
+						</button>
+					</PopoverTrigger>
+					<PopoverContent className="p-4">
+						<form onSubmit={handleTextSubmit} className="flex flex-col gap-4">
+							<Textarea name="text" defaultValue="Teksti" />
+							<button
+								type="submit"
+								className="p-2 bg-primary-500 text-base-white text-sm font-semibold rounded-md"
+							>
+								Lisää
+							</button>
+						</form>
+					</PopoverContent>
+				</Popover>
 				<button
 					onClick={handleExport}
 					disabled={shapes.length < 1}

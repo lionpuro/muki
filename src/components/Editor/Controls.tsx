@@ -104,14 +104,14 @@ const TextControls = ({
 				<textarea
 					ref={textRef}
 					name="text"
-					className="w-full sm:w-1/2 py-1 px-3 bg-base-white border border-base-200 rounded-md"
+					className="w-full py-1 px-3 bg-base-white border border-base-200 rounded-md"
 					style={{ resize: "none" }}
 					value={props.text}
 					onChange={onChange}
 					onKeyDown={onKeyDown}
 				/>
 			</div>
-			<div className="flex flex-col gap-2 w-full sm:w-1/2">
+			<div className="flex flex-col gap-2 w-full">
 				<Label>Fontti</Label>
 				<FontPicker
 					current={{
@@ -121,7 +121,7 @@ const TextControls = ({
 					setFont={selectFont}
 				/>
 			</div>
-			<div className="flex items-center justify-between gap-2 w-full sm:w-1/2 overflow-hidden">
+			<div className="flex items-center justify-between gap-2 w-full overflow-hidden">
 				<Label>Tasaus</Label>
 				<div className="flex bg-base-100 rounded-lg p-0.5">
 					<ToggleButton
