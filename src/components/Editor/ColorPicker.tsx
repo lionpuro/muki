@@ -4,7 +4,7 @@ import {
 	Popover,
 	PopoverContent,
 	PopoverTrigger,
-} from "~/components/ui/popover";
+} from "~/lib/components/popover";
 import { MdClose as XIcon } from "react-icons/md";
 
 export const ColorPicker = ({

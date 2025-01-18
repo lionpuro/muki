@@ -18,7 +18,6 @@ export default function loadFont(
 		link.rel = "stylesheet";
 		link.id = fontID;
 		link.href = url;
-		console.log("loading font:", family, variant);
 		if (callback) {
 			link.onload = callback;
 		}

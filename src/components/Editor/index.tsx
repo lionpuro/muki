@@ -15,8 +15,12 @@ import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
 import Controls from "./Controls";
 import loadFont from "~/components/FontPicker/loadFont";
-import { Textarea } from "~/components/ui/textarea";
-import { Popover, PopoverContent, PopoverTrigger } from "~/components/ui/popover";
+import { Textarea } from "~/lib/components/textarea";
+import {
+	Popover,
+	PopoverContent,
+	PopoverTrigger,
+} from "~/lib/components/popover";
 
 const downloadURI = (uri: string, filename: string) => {
 	const link = document.createElement("a");

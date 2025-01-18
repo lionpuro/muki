@@ -1,6 +1,6 @@
 import * as PopoverPrimitive from "@radix-ui/react-popover";
 import { ComponentPropsWithoutRef, ElementRef, forwardRef } from "react";
-import { cn } from "~/utils";
+import { cn } from "~/lib/utils";
 
 const Popover = PopoverPrimitive.Root;
 

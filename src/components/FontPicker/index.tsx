@@ -12,7 +12,7 @@ import {
 	SelectContent,
 	SelectItem,
 	SelectGroup,
-} from "~/components/ui/select";
+} from "~/lib/components/select";
 
 export type Font = {
 	family: string;
@@ -81,8 +81,8 @@ export const FontPicker = ({
 	};
 
 	return (
-		<div className="grow flex">
-			<div className="flex w-[calc(50%-0.25rem)]">
+		<div className="grow flex gap-2">
+			<div className="flex grow max-w-56">
 				<Select
 					onOpenChange={onOpen}
 					value={current.family}
