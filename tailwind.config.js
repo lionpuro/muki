@@ -7,10 +7,11 @@ export default {
 	theme: {
 		extend: {
 			boxShadow: {
-				main: "0 0px 6px -1px rgb(0 0 0 / 0.1), 0 0px 4px -2px rgb(0 0 0 / 0.1)",
+				main: "0 0px 15px -2px rgb(0 0 0 / 0.1), 0 0px 5px -1px rgb(0 0 0 / 0.2)",
 			},
 			colors: {
 				base: {
+					white: "#fafafa",
 					50: "#F4F4F5",
 					100: "#EAEAEB",
 					200: "#D5D5D8",

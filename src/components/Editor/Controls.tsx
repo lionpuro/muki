@@ -2,6 +2,7 @@ import {
 	ButtonHTMLAttributes,
 	ChangeEvent,
 	KeyboardEventHandler,
+	ReactNode,
 	useRef,
 } from "react";
 import { ShapeData, TextData } from "~/hooks/useShapes";
@@ -14,6 +15,7 @@ import {
 } from "react-icons/md";
 import clsx from "clsx";
 import { FontPicker, FontVariant } from "~/components/FontPicker";
+import { ColorPicker } from "./ColorPicker";
 
 type ButtonProps = Omit<
 	ButtonHTMLAttributes<HTMLButtonElement>,
@@ -26,13 +28,9 @@ export const Button = ({ selected, children, ...props }: ButtonProps) => {
 	return (
 		<button
 			className={clsx(
-				"grow flex justify-center items-center p-2",
-				"text-base-800 border-2 rounded",
+				"flex justify-center items-center p-2 text-base-900 rounded-md",
 				"disabled:bg-base-200 disabled:text-base-500",
-				{
-					"border-primary-400": selected === true,
-					"border-base-200": !selected,
-				},
+				selected === true ? "bg-primary-400" : "bg-base-100",
 			)}
 			{...props}
 		>
@@ -40,6 +38,25 @@ export const Button = ({ selected, children, ...props }: ButtonProps) => {
 		</button>
 	);
 };
+
+const ToggleButton = ({ selected, children, ...props }: ButtonProps) => {
+	return (
+		<button
+			className={clsx(
+				"flex justify-center items-center p-2 text-base-900 rounded-md",
+				"disabled:bg-base-200 disabled:text-base-500",
+				selected === true && "bg-primary-400",
+			)}
+			{...props}
+		>
+			{children}
+		</button>
+	);
+};
+
+const Label = ({ children }: { children: ReactNode }) => (
+	<span className="font-semibold text-base-900">{children}</span>
+);
 
 const TextControls = ({
 	props,
@@ -72,30 +89,30 @@ const TextControls = ({
 	};
 
 	return (
-		<div className="flex flex-col gap-2">
+		<div className="flex flex-col gap-4">
 			<span className="flex justify-between items-center mb-3">
 				<h2 className="font-semibold">Muokkaa tekstiä</h2>
 				<button
 					onClick={removeSelected}
-					className="flex items-center p-2 sm:px-0 gap-1.5 text-sm text-base-800 hover:text-[#f75e68] font-medium rounded"
+					className="flex items-center p-2 sm:px-0 gap-1.5 text-sm text-base-800 hover:text-[#f75e68] font-medium rounded-md"
 				>
 					<TrashIcon className="size-5" />
 					<span className="hidden sm:block">Poista</span>
 				</button>
 			</span>
-			<div className="flex gap-2">
+			<div className="flex">
 				<textarea
 					ref={textRef}
 					name="text"
-					className="w-full sm:w-1/2 py-1 px-3 bg-base-50 border border-base-200 rounded"
+					className="w-full sm:w-1/2 py-1 px-3 bg-base-white border border-base-200 rounded-md"
 					style={{ resize: "none" }}
 					value={props.text}
 					onChange={onChange}
 					onKeyDown={onKeyDown}
 				/>
 			</div>
-			<div className="flex flex-col w-full sm:w-1/2">
-				<span className="py-2 px-1 font-semibold text-sm">Fontti</span>
+			<div className="flex flex-col gap-2 w-full sm:w-1/2">
+				<Label>Fontti</Label>
 				<FontPicker
 					current={{
 						family: props.fontFamily,
@@ -104,33 +121,36 @@ const TextControls = ({
 					setFont={selectFont}
 				/>
 			</div>
-			<div className="flex justify-between gap-2 w-full sm:w-1/2 overflow-hidden">
-				<Button
-					selected={props.align === "left"}
-					onClick={() => updateProp("align", "left")}
-				>
-					<AlignLeftIcon className="size-6" />
-				</Button>
-				<Button
-					selected={props.align === "center"}
-					onClick={() => updateProp("align", "center")}
-				>
-					<AlignCenterIcon className="size-6" />
-				</Button>
-				<Button
-					selected={props.align === "right"}
-					onClick={() => updateProp("align", "right")}
-				>
-					<AlignRightIcon className="size-6" />
-				</Button>
+			<div className="flex items-center justify-between gap-2 w-full sm:w-1/2 overflow-hidden">
+				<Label>Tasaus</Label>
+				<div className="flex bg-base-100 rounded-lg p-0.5">
+					<ToggleButton
+						selected={props.align === "left"}
+						onClick={() => updateProp("align", "left")}
+					>
+						<AlignLeftIcon className="size-6" />
+					</ToggleButton>
+					<ToggleButton
+						selected={props.align === "center"}
+						onClick={() => updateProp("align", "center")}
+					>
+						<AlignCenterIcon className="size-6" />
+					</ToggleButton>
+					<ToggleButton
+						selected={props.align === "right"}
+						onClick={() => updateProp("align", "right")}
+					>
+						<AlignRightIcon className="size-6" />
+					</ToggleButton>
+				</div>
 			</div>
-			<input
-				name="fill"
-				type="color"
-				value={props.fill}
-				onChange={onChange}
-				className="flex border border-base-700 rounded bg-transparent"
-			/>
+			<div className="flex items-center justify-between">
+				<Label>Väri</Label>
+				<ColorPicker
+					color={props.fill}
+					updateColor={(c) => updateProp("fill", c)}
+				/>
+			</div>
 		</div>
 	);
 };

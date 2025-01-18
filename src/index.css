@@ -33,3 +33,10 @@ textarea:focus-visible {
 	outline: 1px solid #3b82f6;
 	outline-offset: -1px;
 }
+
+#colorpicker-popover .react-colorful__saturation {
+	border-radius: 0;
+}
+#colorpicker-popover .react-colorful__hue {
+	@apply rounded-b-md;
+}

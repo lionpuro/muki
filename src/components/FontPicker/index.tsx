@@ -81,14 +81,14 @@ export const FontPicker = ({
 	};
 
 	return (
-		<div className="grow flex gap-2">
+		<div className="grow flex">
 			<div className="flex w-[calc(50%-0.25rem)]">
 				<Select
 					onOpenChange={onOpen}
 					value={current.family}
 					onValueChange={(v) => selectFamily(v)}
 				>
-					<SelectTrigger className="text-base bg-base-50">
+					<SelectTrigger className="text-base bg-base-100">
 						<SelectValue />
 					</SelectTrigger>
 					<SelectContent>
@@ -106,32 +106,36 @@ export const FontPicker = ({
 					</SelectContent>
 				</Select>
 			</div>
-			<Button
-				disabled={
-					!fonts
-						.find((f) => f.family === current.family)
-						?.variants.includes("bold")
-				}
-				selected={
-					current.variant === "bold" || current.variant === "italic bold"
-				}
-				onClick={() => selectVariant("bold")}
-			>
-				<BoldIcon className="size-6" />
-			</Button>
-			<Button
-				disabled={
-					!fonts
-						.find((f) => f.family === current.family)
-						?.variants.includes("italic")
-				}
-				selected={
-					current.variant === "italic" || current.variant === "italic bold"
-				}
-				onClick={() => selectVariant("italic")}
-			>
-				<ItalicIcon className="size-6" />
-			</Button>
+			<div className="flex gap-2 ml-auto">
+				<Button
+					title="Lihavointi"
+					disabled={
+						!fonts
+							.find((f) => f.family === current.family)
+							?.variants.includes("bold")
+					}
+					selected={
+						current.variant === "bold" || current.variant === "italic bold"
+					}
+					onClick={() => selectVariant("bold")}
+				>
+					<BoldIcon className="size-6" />
+				</Button>
+				<Button
+					title="Kursivointi"
+					disabled={
+						!fonts
+							.find((f) => f.family === current.family)
+							?.variants.includes("italic")
+					}
+					selected={
+						current.variant === "italic" || current.variant === "italic bold"
+					}
+					onClick={() => selectVariant("italic")}
+				>
+					<ItalicIcon className="size-6" />
+				</Button>
+			</div>
 		</div>
 	);
 };
