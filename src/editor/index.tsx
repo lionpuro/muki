@@ -1,7 +1,7 @@
 import { FormEvent, useCallback, useRef, useState } from "react";
-import Canvas from "~/editor/Canvas";
+import Canvas from "~/editor/canvas";
 import { nanoid } from "nanoid";
-import FilePicker from "~/editor/FilePicker";
+import FilePicker from "~/editor/file-picker";
 import { resolution } from "~/constants";
 import {
 	MdDownload as DownloadIcon,
@@ -13,8 +13,8 @@ import type { Transformer } from "konva/lib/shapes/Transformer";
 import type { Layer } from "konva/lib/Layer";
 import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
-import Controls from "./Controls";
-import loadFont from "~/editor/FontPicker/loadFont";
+import Controls from "~/editor/controls";
+import loadFont from "~/editor/font-picker/loadFont";
 import { Textarea } from "~/lib/components/textarea";
 import {
 	Popover,

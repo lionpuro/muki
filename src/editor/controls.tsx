@@ -14,8 +14,8 @@ import {
 	MdFormatAlignRight as AlignRightIcon,
 } from "react-icons/md";
 import clsx from "clsx";
-import { FontPicker, FontVariant } from "~/editor/FontPicker";
-import { ColorPicker } from "./ColorPicker";
+import { FontPicker, FontVariant } from "~/editor/font-picker";
+import { ColorPicker } from "~/editor/color-picker";
 
 type ButtonProps = Omit<
 	ButtonHTMLAttributes<HTMLButtonElement>,

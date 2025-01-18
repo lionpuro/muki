@@ -1,7 +1,7 @@
 import * as Three from "three";
 import { Canvas } from "@react-three/fiber";
 import { Grid, PerspectiveCamera, CameraControls } from "@react-three/drei";
-import { Mug } from "./Mug";
+import { Mug } from "./mug";
 import {
 	MdZoomIn as ZoomInIcon,
 	MdZoomOut as ZoomOutIcon,

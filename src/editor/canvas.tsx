@@ -2,9 +2,9 @@ import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Dispatch, RefObject, SetStateAction, useState } from "react";
 import { Stage, Layer, Line } from "react-konva";
-import ImageComponent from "~/editor/shapes/Image";
-import Transformer, { SnapLines } from "~/editor/Transformer";
-import { TextComponent } from "~/editor/shapes/Text";
+import ImageComponent from "~/editor/shapes/image";
+import Transformer, { SnapLines } from "~/editor/transformer";
+import { TextComponent } from "~/editor/shapes/text";
 import { ImageData, ShapeData, TextData } from "~/hooks/useShapes";
 
 export type Resolution = {
