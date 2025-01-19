@@ -1,6 +1,5 @@
 import { FormEvent, useCallback, useRef, useState } from "react";
 import Canvas from "~/editor/canvas";
-import { nanoid } from "nanoid";
 import { resolution } from "~/constants";
 import {
 	MdDownload as DownloadIcon,
@@ -10,7 +9,7 @@ import { Stage } from "konva/lib/Stage";
 import useTextures from "~/hooks/useTextures";
 import type { Transformer } from "konva/lib/shapes/Transformer";
 import type { Layer } from "konva/lib/Layer";
-import useShapes, { ImageData, TextData } from "~/hooks/useShapes";
+import useShapes, { createImage, createText } from "~/hooks/useShapes";
 import useResize from "~/hooks/useResize";
 import Controls from "~/controls";
 import FilePicker from "~/controls/file-picker";
@@ -21,6 +20,13 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "~/lib/components/popover";
+import {
+	ImageComponent,
+	ImageData,
+	TextComponent,
+	TextData,
+	type ShapeType,
+} from "~/editor/shapes";
 
 const downloadURI = (uri: string, filename: string) => {
 	const link = document.createElement("a");
@@ -31,20 +37,13 @@ const downloadURI = (uri: string, filename: string) => {
 	document.body.removeChild(link);
 };
 
-const fitImage = (img: HTMLImageElement) => {
-	const ratio = Math.min(
-		resolution.width / img.width,
-		resolution.height / img.height,
-	);
-	if (img.height > resolution.height || img.width > resolution.width) {
-		return { width: img.width * ratio, height: img.height * ratio };
-	}
-	return { width: img.width, height: img.height };
-};
-
 const Editor = () => {
-	const [selectedShape, selectShape] = useState<string | null>(null);
-	const { shapes, addShape, updateShape, removeShape, findShape } = useShapes();
+	const [selectedShape, selectShape] = useState<{
+		id: string;
+		type: ShapeType;
+	} | null>(null);
+	const { shapes, addText, addImage, updateShape, removeShape, findShape } =
+		useShapes();
 	const containerRef = useRef<HTMLDivElement>(null);
 	const { size, scale } = useResize(containerRef);
 	const stageRef = useRef<Stage>(null);
@@ -62,42 +61,17 @@ const Editor = () => {
 		selectShape(null);
 	};
 
-	const addImage = (img: HTMLImageElement) => {
-		const { width, height } = fitImage(img);
-		const newImage: ImageData = {
-			type: "image",
-			id: nanoid(),
-			width: width,
-			height: height,
-			x: (resolution.width - width) / 2,
-			y: (resolution.height - height) / 2,
-			src: img.src,
-		};
-		addShape(newImage);
-		selectShape(newImage.id);
+	const newImage = (img: HTMLImageElement) => {
+		const newImage = createImage(img);
+		addImage(newImage);
+		selectShape({ id: newImage.id, type: "image" });
 	};
 
-	const addText = (text: string) => {
-		const newText: TextData = {
-			type: "text",
-			id: nanoid(),
-			width: 800,
-			height: 400,
-			scaleX: 1,
-			scaleY: 1,
-			x: Math.floor(Math.random() * 500),
-			y: Math.floor(Math.random() * 200),
-			fill: "#000000",
-			text: text,
-			fontSize: 280,
-			fontStyle: "normal",
-			fontFamily: "Nunito",
-			align: "left",
-			lineHeight: 1,
-		};
+	const newText = (text: string) => {
+		const newText = createText(text);
 		loadFont("Nunito", "normal", () => {
-			addShape(newText);
-			selectShape(newText.id);
+			addText(newText);
+			selectShape({ id: newText.id, type: "text" });
 		});
 	};
 
@@ -122,19 +96,25 @@ const Editor = () => {
 		trRef.current?.show();
 	};
 
+	const onChange = (props: ImageData | TextData) => {
+		updateShape(props);
+		updateTexture();
+	};
+
 	const handleTextSubmit = (e: FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		const text = e.currentTarget.text.value;
 		if (text) {
-			addText(text);
+			newText(text);
 			setPopoverOpen(false);
 		}
 	};
 	const [popoverOpen, setPopoverOpen] = useState(false);
+
 	return (
 		<div className="grow flex flex-col">
 			<div className="flex p-2 sm:px-2 gap-2 bg-base-white border-b border-base-200 text-base-900">
-				<FilePicker addImage={addImage} />
+				<FilePicker addImage={newImage} />
 				<Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
 					<PopoverTrigger asChild>
 						<button
@@ -159,7 +139,7 @@ const Editor = () => {
 				</Popover>
 				<button
 					onClick={handleExport}
-					disabled={shapes.length < 1}
+					disabled={shapes.images.length < 1 && shapes.texts.length < 1}
 					className="ml-auto flex items-center gap-2 p-2 sm:px-3 rounded-md bg-primary-500 hover:bg-primary-600 disabled:bg-base-400 text-base-50 font-semibold text-sm"
 				>
 					<DownloadIcon className="size-6" />
@@ -174,12 +154,29 @@ const Editor = () => {
 						trRef={trRef}
 						size={size}
 						scale={scale}
-						shapes={shapes}
 						selectedShape={selectedShape}
 						selectShape={selectShape}
-						updateShape={updateShape}
 						updateTexture={updateTexture}
-					/>
+					>
+						{shapes.images.map((shape) => (
+							<ImageComponent
+								key={shape.id}
+								props={shape}
+								onSelect={() => selectShape({ id: shape.id, type: shape.type })}
+								onChange={onChange}
+								onLoad={updateTexture}
+							/>
+						))}
+						{shapes.texts.map((shape) => (
+							<TextComponent
+								key={shape.id}
+								props={shape}
+								onSelect={() => selectShape({ id: shape.id, type: shape.type })}
+								onChange={onChange}
+								onLoad={updateTexture}
+							/>
+						))}
+					</Canvas>
 				</div>
 			</div>
 			<div className="flex flex-col bg-base-white gap-4 p-4 sm:p-4 mt-auto">

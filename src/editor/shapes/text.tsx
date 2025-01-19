@@ -2,7 +2,7 @@ import Konva from "konva";
 import useFontObserver, { FontFace } from "~/hooks/useFontObserver";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 import { Text as KonvaText } from "react-konva";
-import { TextData } from "~/hooks/useShapes";
+import { TextData } from "~/editor/shapes";
 import type { FontVariant } from "~/controls/font-picker";
 
 function getFontFace(family: string, variant: FontVariant): FontFace {

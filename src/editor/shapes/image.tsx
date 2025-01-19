@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { KonvaEventObject } from "konva/lib/Node";
 import { Image as KonvaImage } from "react-konva";
 import useImage from "~/hooks/useImage";
-import { ImageData } from "~/hooks/useShapes";
+import { ImageData } from "~/editor/shapes";
 
 export const ImageComponent = ({
 	props,

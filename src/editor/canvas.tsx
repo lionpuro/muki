@@ -1,11 +1,15 @@
 import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import { Dispatch, RefObject, SetStateAction, useState } from "react";
+import {
+	Dispatch,
+	ReactNode,
+	RefObject,
+	SetStateAction,
+	useState,
+} from "react";
 import { Stage, Layer, Line } from "react-konva";
-import ImageComponent from "~/editor/shapes/image";
 import Transformer, { SnapLines } from "~/editor/transformer";
-import { TextComponent } from "~/editor/shapes/text";
-import { ImageData, ShapeData, TextData } from "~/hooks/useShapes";
+import { SelectedShape } from "~/editor/shapes";
 
 export type Resolution = {
 	width: number;
@@ -20,63 +24,29 @@ const Canvas = ({
 	trRef,
 	size,
 	scale,
-	shapes,
 	selectedShape,
 	selectShape,
-	updateShape,
 	updateTexture,
+	children,
 }: {
 	stageRef: RefObject<Konva.Stage>;
 	layerRef: RefObject<Konva.Layer>;
 	trRef: RefObject<Konva.Transformer>;
 	size: Resolution;
 	scale: number;
-	shapes: ShapeData[];
-	selectedShape: string | null;
-	selectShape: Dispatch<SetStateAction<string | null>>;
-	updateShape: <T extends ShapeData>(s: T) => void;
+	selectedShape: SelectedShape | null;
+	selectShape: Dispatch<SetStateAction<SelectedShape | null>>;
 	updateTexture: () => void;
+	children: ReactNode;
 }) => {
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
 		vertical: [],
 	});
 
-	const onChange = (props: ImageData | TextData) => {
-		updateShape(props);
-		updateTexture();
-	};
-
 	const deselect = (e: ClickEvent) => {
 		if (e.target === stageRef.current) {
 			selectShape(null);
-		}
-	};
-
-	const renderShape = (shape: ShapeData) => {
-		switch (shape.type) {
-			case "image":
-				return (
-					<ImageComponent
-						key={shape.id}
-						props={shape as ImageData}
-						onSelect={() => selectShape(shape.id)}
-						onChange={onChange}
-						onLoad={updateTexture}
-					/>
-				);
-			case "text":
-				return (
-					<TextComponent
-						key={shape.id}
-						props={shape as TextData}
-						onSelect={() => selectShape(shape.id)}
-						onChange={onChange}
-						onLoad={updateTexture}
-					/>
-				);
-			default:
-				return null;
 		}
 	};
 
@@ -91,7 +61,7 @@ const Canvas = ({
 			onTouchStart={deselect}
 		>
 			<Layer ref={layerRef} name="main-layer">
-				{shapes.map((shape) => renderShape(shape))}
+				{children}
 			</Layer>
 			<Layer>
 				<Transformer

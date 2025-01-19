@@ -5,7 +5,7 @@ import {
 	ReactNode,
 	useRef,
 } from "react";
-import type { ShapeData, TextData } from "~/hooks/useShapes";
+import type { ShapeData, TextData } from "~/editor/shapes";
 import {
 	MdDelete as TrashIcon,
 	//MdFormatLineSpacing as LineHeightIcon,

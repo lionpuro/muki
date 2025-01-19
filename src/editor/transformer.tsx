@@ -3,6 +3,7 @@ import { LineConfig } from "konva/lib/shapes/Line";
 import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
 import { Transformer as KonvaTransformer } from "react-konva";
 import { snap_threshold, snap_line_style } from "~/constants";
+import { SelectedShape } from "./shapes";
 
 type Snap = "start" | "center" | "end";
 
@@ -42,7 +43,7 @@ const Transformer = ({
 	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
 	onUpdate: () => void;
-	selectedShape: string | null;
+	selectedShape: SelectedShape | null;
 }) => {
 	const getLineGuideStops = (excludedShape: Konva.Node) => {
 		const stage = stageRef.current;
@@ -254,7 +255,7 @@ const Transformer = ({
 			return;
 		}
 
-		const selected = stage.findOne("#" + selectedShape);
+		const selected = stage.findOne("#" + selectedShape.id);
 		if (selected && tr.getNodes()[0] !== selected) {
 			tr.nodes([selected]);
 		}
