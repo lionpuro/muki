@@ -5,7 +5,7 @@ import {
 	PopoverContent,
 	PopoverTrigger,
 } from "~/lib/components/popover";
-import { MdClose as XIcon } from "react-icons/md";
+import { XIcon } from "~/lib/icons";
 
 export const ColorPicker = ({
 	color,
@@ -21,13 +21,16 @@ export const ColorPicker = ({
 	return (
 		<Popover open={isOpen} onOpenChange={(v) => setIsOpen(v)}>
 			<div className="flex gap-2">
-				<span className="flex relative bg-base-100 rounded-md overflow-hidden before:content-['#'] before:absolute before:left-14 before:top-1/2 before:transform before:-translate-y-1/2 before:font-bold before:text-base-600">
+				<span className="bg-base-white flex relative overflow-hidden before:content-['#'] before:absolute before:left-14 before:top-1/2 before:transform before:-translate-y-1/2 before:font-bold before:text-base-600 border rounded-lg">
 					<PopoverTrigger asChild>
-						<button className="w-10 h-9" style={{ backgroundColor: value }} />
+						<button
+							className="size-10 rounded-lg"
+							style={{ backgroundColor: value }}
+						/>
 					</PopoverTrigger>
-					<span className="flex items-center focus-within:after:content-['_'] focus-within:after:bg-primary-400 focus-within:after:h-[2px] focus-within:after:w-full relative after:absolute after:bottom-0 after:left-0">
+					<span className="flex items-center">
 						<HexColorInput
-							className="pl-10 py-0 font-medium max-w-48 bg-transparent focus-within:outline-none"
+							className="mx-1 pl-10 py-0 font-medium max-w-48 w-full sm:max-w-40 bg-transparent focus-within:outline-none focus-within:border-b border-primary-400"
 							color={value}
 							onChange={(c) => {
 								setValue(c);
@@ -36,10 +39,12 @@ export const ColorPicker = ({
 						/>
 					</span>
 				</span>
+				{/*
+				 */}
 			</div>
 			<PopoverContent
 				id="colorpicker-popover"
-				className="w-fit rounded-md ml-4 p-0"
+				className="w-fit rounded-lg ml-4 p-0"
 			>
 				<div className="flex flex-col">
 					<div className="flex">

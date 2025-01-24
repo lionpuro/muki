@@ -1,16 +1,15 @@
 import clsx from "clsx";
-import { TextareaHTMLAttributes } from "react";
+import { forwardRef, TextareaHTMLAttributes } from "react";
 
-export const Textarea = ({
-	className = "",
-	...props
-}: TextareaHTMLAttributes<HTMLTextAreaElement>) => (
-	<textarea
-		className={clsx(
-			"w-full py-1 px-3 bg-base-white border border-base-200 rounded-md",
-			className,
-		)}
-		style={{ resize: "none" }}
-		{...props}
-	/>
+type TextareaProps = TextareaHTMLAttributes<HTMLTextAreaElement>;
+
+export const Textarea = forwardRef<HTMLTextAreaElement, TextareaProps>(
+	({ className = "", ...props }, ref) => (
+		<textarea
+			ref={ref}
+			className={clsx("w-full py-1 px-3 bg-base-white rounded-lg", className)}
+			style={{ resize: "none" }}
+			{...props}
+		/>
+	),
 );

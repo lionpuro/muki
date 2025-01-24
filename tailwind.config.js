@@ -6,10 +6,15 @@ export default {
 	},
 	theme: {
 		extend: {
+			transitionProperty: {
+				height: "height",
+				"max-height": "max-height",
+			},
 			boxShadow: {
 				main: "0 0px 15px -2px rgb(0 0 0 / 0.1), 0 0px 5px -1px rgb(0 0 0 / 0.2)",
 			},
 			colors: {
+				background: "#fafafa",
 				base: {
 					white: "#fafafa",
 					50: "#F4F4F5",

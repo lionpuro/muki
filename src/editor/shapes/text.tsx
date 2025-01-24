@@ -60,7 +60,7 @@ export const TextComponent = ({
 
 	useEffect(() => {
 		onLoad();
-	}, [onLoad, props.fill, props.align, props.lineHeight]);
+	}, [onLoad, props.fill, props.align, props.lineHeight, props.text]);
 
 	useEffect(() => {
 		return () => onLoad();

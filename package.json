@@ -30,7 +30,8 @@
 		"react-konva": "^18.2.10",
 		"react-konva-utils": "^1.0.7",
 		"tailwind-merge": "^2.6.0",
-		"three": "^0.171.0"
+		"three": "^0.171.0",
+		"zustand": "^5.0.3"
 	},
 	"devDependencies": {
 		"@eslint/js": "^9.17.0",

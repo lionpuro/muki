@@ -1,9 +1,16 @@
 import Konva from "konva";
 import { LineConfig } from "konva/lib/shapes/Line";
-import { Dispatch, SetStateAction, useEffect, useMemo } from "react";
+import {
+	Dispatch,
+	SetStateAction,
+	useContext,
+	useEffect,
+	useMemo,
+} from "react";
 import { Transformer as KonvaTransformer } from "react-konva";
 import { snap_threshold, snap_line_style } from "~/constants";
-import { SelectedShape } from "./shapes";
+import { useSelectionStore } from "~/store/useSelectionStore";
+import { StageContext } from "~/context/StageContext";
 
 type Snap = "start" | "center" | "end";
 
@@ -33,18 +40,13 @@ type Guide = {
 };
 
 const Transformer = ({
-	stageRef,
-	trRef,
 	setLines,
 	onUpdate,
-	selectedShape,
 }: {
-	stageRef: React.RefObject<Konva.Stage>;
-	trRef: React.RefObject<Konva.Transformer>;
 	setLines: Dispatch<SetStateAction<SnapLines>>;
 	onUpdate: () => void;
-	selectedShape: SelectedShape | null;
 }) => {
+	const { stageRef, trRef } = useContext(StageContext);
 	const getLineGuideStops = (excludedShape: Konva.Node) => {
 		const stage = stageRef.current;
 		if (!stage) return { vertical: [], horizontal: [] };
@@ -246,25 +248,31 @@ const Transformer = ({
 	const onDragEnd = () => setLines({ horizontal: [], vertical: [] });
 
 	// attach to selected
+	const selected = useSelectionStore((state) => state.selected);
 	useEffect(() => {
 		const tr = trRef.current;
 		const stage = stageRef.current;
 		if (!stage || !tr) return;
-		if (!selectedShape) {
+		if (!selected) {
 			tr.nodes([]);
 			return;
 		}
 
-		const selected = stage.findOne("#" + selectedShape.id);
-		if (selected && tr.getNodes()[0] !== selected) {
-			tr.nodes([selected]);
+		const node = stage.findOne("#" + selected.id);
+		if (!node) {
+			tr.nodes([]);
+			return;
 		}
-	}, [selectedShape, stageRef, trRef]);
+		if (tr.getNodes()[0] !== node) {
+			tr.nodes([node]);
+		}
+	}, [selected, stageRef, trRef]);
 
 	const mobileMediaQuery = window.matchMedia("(max-width: 639px)");
 	const anchorSize = useMemo(() => {
 		return mobileMediaQuery.matches ? 20 : 15;
 	}, [mobileMediaQuery.matches]);
+
 	return (
 		<KonvaTransformer
 			ref={trRef}

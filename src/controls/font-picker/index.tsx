@@ -1,8 +1,4 @@
-import {
-	MdFormatBold as BoldIcon,
-	MdFormatItalic as ItalicIcon,
-} from "react-icons/md";
-import { Button } from "~/controls";
+import clsx from "clsx";
 import { fonts } from "~/constants";
 import loadFont from "./loadFont";
 import {
@@ -13,6 +9,8 @@ import {
 	SelectItem,
 	SelectGroup,
 } from "~/lib/components/select";
+import { BoldIcon, ItalicIcon } from "~/lib/icons";
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
 export type Font = {
 	family: string;
@@ -81,61 +79,87 @@ export const FontPicker = ({
 	};
 
 	return (
-		<div className="grow flex gap-2">
-			<div className="flex grow max-w-56">
-				<Select
-					onOpenChange={onOpen}
-					value={current.family}
-					onValueChange={(v) => selectFamily(v)}
-				>
-					<SelectTrigger className="text-base bg-base-100">
-						<SelectValue />
-					</SelectTrigger>
-					<SelectContent>
-						<SelectGroup>
-							{fonts.map((font) => (
-								<SelectItem
-									key={font.family}
-									value={font.family}
-									className="text-base"
-								>
-									<span style={{ fontFamily: font.family }}>{font.family}</span>
-								</SelectItem>
-							))}
-						</SelectGroup>
-					</SelectContent>
-				</Select>
+		<>
+			<div className="flex gap-2">
+				<div className="w-full flex min-w-40 max-w-48 sm:max-w-56">
+					<Select
+						onOpenChange={onOpen}
+						value={current.family}
+						onValueChange={(v) => selectFamily(v)}
+					>
+						<SelectTrigger className="h-10 text-base bg-base-white">
+							<SelectValue />
+						</SelectTrigger>
+						<SelectContent>
+							<SelectGroup>
+								{fonts.map((font) => (
+									<SelectItem
+										key={font.family}
+										value={font.family}
+										className="text-base"
+									>
+										<span style={{ fontFamily: font.family }}>
+											{font.family}
+										</span>
+									</SelectItem>
+								))}
+							</SelectGroup>
+						</SelectContent>
+					</Select>
+				</div>
+				<div className="ml-auto flex gap-2">
+					<PushButton
+						title="Lihavointi"
+						disabled={
+							!fonts
+								.find((f) => f.family === current.family)
+								?.variants.includes("bold")
+						}
+						selected={
+							current.variant === "bold" || current.variant === "italic bold"
+						}
+						onClick={() => selectVariant("bold")}
+					>
+						<BoldIcon className="size-6" />
+					</PushButton>
+					<PushButton
+						title="Kursivointi"
+						disabled={
+							!fonts
+								.find((f) => f.family === current.family)
+								?.variants.includes("italic")
+						}
+						selected={
+							current.variant === "italic" || current.variant === "italic bold"
+						}
+						onClick={() => selectVariant("italic")}
+					>
+						<ItalicIcon className="size-6" />
+					</PushButton>
+				</div>
 			</div>
-			<div className="flex gap-2 ml-auto">
-				<Button
-					title="Lihavointi"
-					disabled={
-						!fonts
-							.find((f) => f.family === current.family)
-							?.variants.includes("bold")
-					}
-					selected={
-						current.variant === "bold" || current.variant === "italic bold"
-					}
-					onClick={() => selectVariant("bold")}
-				>
-					<BoldIcon className="size-6" />
-				</Button>
-				<Button
-					title="Kursivointi"
-					disabled={
-						!fonts
-							.find((f) => f.family === current.family)
-							?.variants.includes("italic")
-					}
-					selected={
-						current.variant === "italic" || current.variant === "italic bold"
-					}
-					onClick={() => selectVariant("italic")}
-				>
-					<ItalicIcon className="size-6" />
-				</Button>
-			</div>
-		</div>
+		</>
+	);
+};
+
+const PushButton = ({
+	selected,
+	children,
+	...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & {
+	selected: boolean;
+	children?: ReactNode;
+}) => {
+	return (
+		<button
+			className={clsx(
+				"size-10 flex justify-center items-center text-base-900 rounded-md",
+				"disabled:bg-base-200 disabled:text-base-500",
+				selected === true ? "bg-primary-400" : "bg-base-white",
+			)}
+			{...props}
+		>
+			{children}
+		</button>
 	);
 };

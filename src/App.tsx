@@ -1,14 +1,13 @@
-import Editor from "~/editor";
-import Preview from "~/preview";
 import { TextureProvider } from "~/context/TextureContext";
+import { StageProvider } from "./context/StageContext";
+import { Layout } from "./layout";
 
 const App = () => {
 	return (
 		<TextureProvider>
-			<div className="h-full flex flex-col">
-				<Preview />
-				<Editor />
-			</div>
+			<StageProvider>
+				<Layout />
+			</StageProvider>
 		</TextureProvider>
 	);
 };

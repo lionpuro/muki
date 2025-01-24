@@ -4,7 +4,7 @@ type Status = "loading" | "loaded" | "failed";
 
 export default function useImage(
 	url: string,
-	callback: () => void,
+	callback?: () => void,
 ): [img: HTMLImageElement | undefined, status: Status] {
 	const statusRef = useRef<Status>("loading");
 	const imageRef = useRef<HTMLImageElement | undefined>(undefined);
@@ -29,7 +29,9 @@ export default function useImage(
 			statusRef.current = "loaded";
 			imageRef.current = img;
 			setStateToken(Math.random());
-			callback();
+			if (callback) {
+				callback();
+			}
 		};
 
 		const onerror = () => {

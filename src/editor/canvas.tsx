@@ -1,15 +1,9 @@
-import Konva from "konva";
 import { KonvaEventObject } from "konva/lib/Node";
-import {
-	Dispatch,
-	ReactNode,
-	RefObject,
-	SetStateAction,
-	useState,
-} from "react";
+import { ReactNode, useContext, useState } from "react";
 import { Stage, Layer, Line } from "react-konva";
 import Transformer, { SnapLines } from "~/editor/transformer";
-import { SelectedShape } from "~/editor/shapes";
+import { useSelectionStore } from "~/store/useSelectionStore";
+import { StageContext } from "~/context/StageContext";
 
 export type Resolution = {
 	width: number;
@@ -19,30 +13,23 @@ export type Resolution = {
 type ClickEvent = KonvaEventObject<MouseEvent | TouchEvent>;
 
 const Canvas = ({
-	stageRef,
-	layerRef,
-	trRef,
 	size,
 	scale,
-	selectedShape,
-	selectShape,
 	updateTexture,
 	children,
 }: {
-	stageRef: RefObject<Konva.Stage>;
-	layerRef: RefObject<Konva.Layer>;
-	trRef: RefObject<Konva.Transformer>;
 	size: Resolution;
 	scale: number;
-	selectedShape: SelectedShape | null;
-	selectShape: Dispatch<SetStateAction<SelectedShape | null>>;
 	updateTexture: () => void;
 	children: ReactNode;
 }) => {
+	const { stageRef, layerRef } = useContext(StageContext);
 	const [snapLines, setSnapLines] = useState<SnapLines>({
 		horizontal: [],
 		vertical: [],
 	});
+
+	const selectShape = useSelectionStore((state) => state.setSelected);
 
 	const deselect = (e: ClickEvent) => {
 		if (e.target === stageRef.current) {
@@ -59,18 +46,13 @@ const Canvas = ({
 			scaleY={scale}
 			onMouseDown={deselect}
 			onTouchStart={deselect}
+			className="disable-select"
 		>
 			<Layer ref={layerRef} name="main-layer">
 				{children}
 			</Layer>
 			<Layer>
-				<Transformer
-					stageRef={stageRef}
-					trRef={trRef}
-					setLines={setSnapLines}
-					onUpdate={updateTexture}
-					selectedShape={selectedShape}
-				/>
+				<Transformer setLines={setSnapLines} onUpdate={updateTexture} />
 				{snapLines.horizontal.map((line, i) => (
 					<Line key={i} {...line} strokeScaleEnabled={false} />
 				))}

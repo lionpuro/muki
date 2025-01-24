@@ -5,10 +5,10 @@ import { Mug } from "./mug";
 import {
 	MdZoomIn as ZoomInIcon,
 	MdZoomOut as ZoomOutIcon,
-	MdRotateLeft,
-	MdRotateRight,
 } from "react-icons/md";
 import { useRef } from "react";
+import { Rotate360Icon } from "~/lib/icons";
+import useMobile from "~/hooks/useMobile";
 
 const closestDivisible = (num: number, div: number) => {
 	const offsetDiv = div < 0 ? div + 1 : div - 1;
@@ -26,23 +26,32 @@ const Preview = () => {
 		const azimuth = closest - ang + rad;
 		controlsRef.current.rotate(azimuth, 0, true);
 	};
+
 	const zoom = (step: number) => {
 		if (!controlsRef.current) return;
 		controlsRef.current.dolly(step, true);
 	};
+
+	const { isMobile } = useMobile();
+
 	return (
-		<div className="relative bg-base-white flex flex-col min-h-[300px] h-1/3 max-h-[500px] sm:min-h-[500px] border-b border-base-200">
+		<div
+			className={`relative grow bg-base-white flex flex-col
+			rounded-lg overflow-hidden
+			min-h-[200px] h-full
+			sm:h-auto sm:min-h-[300px]`}
+		>
 			<Canvas>
 				<PerspectiveCamera
 					makeDefault
 					fov={35}
-					position={[0, 1, 5]}
+					position={[0, 1, isMobile ? 9 : 7]}
 					zoom={0.75}
 				/>
 				<CameraControls
 					ref={controlsRef}
 					minDistance={2}
-					maxDistance={6}
+					maxDistance={9}
 					minPolarAngle={0.5}
 					maxPolarAngle={2.5}
 					draggingSmoothTime={0}
@@ -82,8 +91,8 @@ const Preview = () => {
 					intensity={Math.PI * 0.5}
 				/>
 			</Canvas>
-			<div className="absolute left-2 sm:left-4 top-0 h-full flex flex-col justify-center pointer-events-none">
-				<div className="flex flex-col bg-base-100 text-base-800 rounded-md pointer-events-auto">
+			<div className="absolute bottom-3 sm:bottom-auto w-full sm:w-auto sm:top-0 sm:left-3 sm:left-4 sm:h-full flex sm:flex-col justify-center pointer-events-none">
+				<div className="flex sm:flex-col text-base-800 bg-base-white border border-base-100 rounded-lg pointer-events-auto">
 					<button onClick={() => zoom(1)} className="p-2">
 						<ZoomInIcon className="size-6" />
 					</button>
@@ -91,10 +100,10 @@ const Preview = () => {
 						<ZoomOutIcon className="size-6" />
 					</button>
 					<button onClick={() => rotate(90)} className="p-2">
-						<MdRotateRight className="size-6" />
+						<Rotate360Icon className="size-6" />
 					</button>
 					<button onClick={() => rotate(-90)} className="p-2">
-						<MdRotateLeft className="size-6" />
+						<Rotate360Icon className="size-6 scale-x-[-1]" />
 					</button>
 				</div>
 			</div>
